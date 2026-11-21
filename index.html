@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wayfinder: plan a trip with four specialists</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<main>
+  <section>
+    <h1>Four specialists. One trip.</h1>
+    <p class="lede">Flights, stays and activities are researched at the same time. A lead planner turns their findings into a day-by-day itinerary.</p>
+    <form id="f">
+      <label>From<input name="origin" required placeholder="Kozhikode"></label>
+      <label>To<input name="destination" required placeholder="Lisbon"></label>
+      <label>Start<input type="date" name="start" required></label>
+      <label>End<input type="date" name="end" required></label>
+      <label>Travellers<input type="number" name="travellers" min="1" value="2"></label>
+      <label>Budget
+        <select name="budget">
+          <option>budget</option>
+          <option selected>mid-range</option>
+          <option>luxury</option>
+        </select>
+      </label>
+      <label class="wide">Interests<input name="interests" placeholder="street food, old towns, sunsets"></label>
+      <button id="go">Plan my trip</button>
+    </form>
+  </section>
+
+  <section class="crew" aria-live="polite">
+    <h2>Your planning crew</h2>
+    <p class="empty" id="empty">Fill in the trip details and the specialists will start working here.</p>
+    <div id="lanes"></div>
+    <div id="final" class="final" hidden><div class="out" id="final-out"></div></div>
+  </section>
+</main>
+<script src="/static/script.js"></script>
+</body>
+</html>
