@@ -1,43 +1,191 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Wayfinder: plan a trip with four specialists</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-<main>
-  <section>
-    <h1>Four specialists. One trip.</h1>
-    <p class="lede">Flights, stays and activities are researched at the same time. A lead planner turns their findings into a day-by-day itinerary.</p>
-    <form id="f">
-      <label>From<input name="origin" required placeholder="Kozhikode"></label>
-      <label>To<input name="destination" required placeholder="Lisbon"></label>
-      <label>Start<input type="date" name="start" required></label>
-      <label>End<input type="date" name="end" required></label>
-      <label>Travellers<input type="number" name="travellers" min="1" value="2"></label>
-      <label>Budget
-        <select name="budget">
-          <option>budget</option>
-          <option selected>mid-range</option>
-          <option>luxury</option>
-        </select>
-      </label>
-      <label class="wide">Interests<input name="interests" placeholder="street food, old towns, sunsets"></label>
-      <button id="go">Plan my trip</button>
-    </form>
-  </section>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Plan your next adventure with Wayfinder.">
+  <title>Wayfinder — Your Trip Planner</title>
 
-  <section class="crew" aria-live="polite">
-    <h2>Your planning crew</h2>
-    <p class="empty" id="empty">Fill in the trip details and the specialists will start working here.</p>
-    <div id="lanes"></div>
-    <div id="final" class="final" hidden><div class="out" id="final-out"></div></div>
-  </section>
-</main>
-<script src="/static/script.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./style.css">
+  <script src="./script.js" defer></script>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">
+      <span class="brand-icon">✳</span>
+      wayfinder<span class="brand-dot">.</span>
+    </a>
+    <span class="header-note">Your next adventure starts here</span>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <span class="eyebrow">YOUR PERSONAL TRIP PLANNER</span>
+      <h1>Less planning.<br>More <span>wandering.</span></h1>
+      <p class="intro-text">
+        Tell us what your dream trip looks like. Build a simple,
+        personalized plan for your next adventure.
+      </p>
+
+      <div class="feature-list">
+        <div class="feature">
+          <span class="feature-icon">✈</span>
+          <div>
+            <strong>Flight ideas</strong>
+            <p>Explore ways to reach your destination.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">⌂</span>
+          <div>
+            <strong>Stay suggestions</strong>
+            <p>Find the right area for your budget.</p>
+          </div>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">✦</span>
+          <div>
+            <strong>Local experiences</strong>
+            <p>Discover sights, food and activities.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="fine-print">
+        A lightweight trip planner hosted on GitHub Pages.
+      </p>
+    </section>
+
+    <section class="planner-card">
+      <div class="card-heading">
+        <div>
+          <span class="eyebrow">LET'S GET STARTED</span>
+          <h2>Plan your trip</h2>
+        </div>
+        <span class="heading-icon">↗</span>
+      </div>
+
+      <form id="trip-form">
+        <div class="field-row">
+          <label>
+            From
+            <input name="origin" type="text" placeholder="Kozhikode, India" required>
+          </label>
+          <label>
+            Destination
+            <input name="destination" type="text" placeholder="Lisbon, Portugal" required>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label>
+            Departure
+            <input name="start" type="date" required>
+          </label>
+          <label>
+            Return
+            <input name="end" type="date" required>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label>
+            Travellers
+            <input name="travellers" type="number" min="1" max="50" value="2" required>
+          </label>
+          <label>
+            Budget
+            <select name="budget">
+              <option value="budget">Budget-friendly</option>
+              <option value="mid-range" selected>Mid-range</option>
+              <option value="luxury">Luxury</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          What do you enjoy?
+          <input name="interests" type="text" placeholder="Street food, beaches, history...">
+        </label>
+
+        <button id="plan-button" type="submit">
+          <span>Build my trip plan</span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <p class="form-note">Your details stay in this browser; no account required.</p>
+      </form>
+
+      <div id="results" class="results" hidden aria-live="polite">
+        <div class="results-heading">
+          <span class="eyebrow">YOUR TRIP OVERVIEW</span>
+          <button type="button" id="reset-button" class="reset-button">Start over</button>
+        </div>
+
+        <h2 id="trip-title"></h2>
+        <p id="trip-summary" class="trip-summary"></p>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <span>Duration</span>
+            <strong id="trip-duration"></strong>
+          </div>
+          <div class="stat">
+            <span>Travellers</span>
+            <strong id="trip-travellers"></strong>
+          </div>
+          <div class="stat">
+            <span>Budget style</span>
+            <strong id="trip-budget"></strong>
+          </div>
+        </div>
+
+        <div class="results-grid">
+          <article class="result-section">
+            <span class="result-icon">✈</span>
+            <h3>Getting there</h3>
+            <div id="flight-output"></div>
+          </article>
+
+          <article class="result-section">
+            <span class="result-icon">⌂</span>
+            <h3>Where to stay</h3>
+            <div id="stay-output"></div>
+          </article>
+
+          <article class="result-section">
+            <span class="result-icon">✦</span>
+            <h3>Things to explore</h3>
+            <div id="activity-output"></div>
+          </article>
+        </div>
+
+        <section class="itinerary-section">
+          <span class="eyebrow">YOUR DAY-BY-DAY OUTLINE</span>
+          <h3>A little plan, a lot of adventure.</h3>
+          <div id="itinerary-output"></div>
+        </section>
+
+        <button id="download-button" class="secondary-button" type="button">
+          Download trip plan ↓
+        </button>
+
+        <p class="disclaimer">
+          Suggestions are general planning ideas, not live booking results.
+          Verify prices, opening hours and travel requirements before booking.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand footer-brand" href="./">wayfinder<span class="brand-dot">.</span></a>
+    <span>Made for curious travellers.</span>
+  </footer>
 </body>
 </html>
