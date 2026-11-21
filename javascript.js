@@ -1,662 +1,516 @@
 
-const form = document.getElementById("tripForm");
-const errorBox = document.getElementById("error");
-const startDateInput = document.getElementById("startDate");
-const endDateInput = document.getElementById("endDate");
-const resultsContent = document.getElementById("resultsContent");
-const emptyState = document.getElementById("emptyState");
+"use strict";
 
-const expenseNames = {
-  transport: "Transportation",
-  stay: "Accommodation",
-  food: "Food and dining",
-  local: "Local transportation",
-  activities: "Activities and sightseeing"
-};
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("tripForm");
+  const error = document.getElementById("error");
+  const startDateInput = document.getElementById("startDate");
+  const endDateInput = document.getElementById("endDate");
+  const resultsSection = document.getElementById("results");
+  const emptyState = document.getElementById("emptyState");
+  const resultsContent = document.getElementById("resultsContent");
 
-const expenseColors = {
-  transport: "#5381ed",
-  stay: "#45ad89",
-  food: "#f3ad52",
-  local: "#a17be7",
-  activities: "#ed7e8d"
-};
-
-const expenseIcons = {
-  transport: "✈️",
-  stay: "🛏️",
-  food: "🍜",
-  local: "🚕",
-  activities: "🎟️"
-};
-
-const styleRates = {
-  budget: {
-    transport: 3500,
-    stay: 1400,
-    food: 350,
-    local: 180,
-    activities: 200
-  },
-  balanced: {
-    transport: 6500,
-    stay: 3000,
-    food: 750,
-    local: 350,
-    activities: 550
-  },
-  comfort: {
-    transport: 11000,
-    stay: 6000,
-    food: 1400,
-    local: 750,
-    activities: 1200
-  }
-};
-
-const interestActivities = {
-  culture: [
-    ["Explore a historic landmark", "Visit a museum or cultural attraction", "Discover the old town"],
-    ["Visit a heritage site", "Explore local architecture", "Try a cultural walking tour"],
-    ["Discover a traditional neighbourhood", "Visit a famous monument", "Explore local history"]
-  ],
-  nature: [
-    ["Enjoy a scenic nature walk", "Visit a garden or park", "Watch the sunset outdoors"],
-    ["Explore a natural viewpoint", "Visit a lake or garden", "Enjoy a peaceful sunset"],
-    ["Take a scenic walk", "Explore a nature spot", "Find a beautiful sunset view"]
-  ],
-  food: [
-    ["Try a local breakfast", "Explore a food market", "Enjoy regional dishes"],
-    ["Visit a local café", "Try a regional speciality", "Discover a popular restaurant"],
-    ["Enjoy a traditional breakfast", "Sample local snacks", "Try a memorable dinner"]
-  ],
-  adventure: [
-    ["Try an outdoor activity", "Explore an exciting attraction", "Plan an adventurous outing"],
-    ["Choose an outdoor adventure", "Explore a trail or activity", "Try something new"],
-    ["Consider a guided adventure", "Discover an outdoor attraction", "Enjoy an active afternoon"]
-  ],
-  shopping: [
-    ["Explore local markets", "Visit shopping streets", "Look for local crafts"],
-    ["Browse local boutiques", "Discover handmade souvenirs", "Explore a shopping district"],
-    ["Visit a local market", "Find unique gifts", "Explore independent shops"]
-  ],
-  relax: [
-    ["Enjoy a slow morning", "Spend time at a peaceful spot", "Watch the sunset"],
-    ["Relax at a café", "Enjoy a leisurely afternoon", "Take an evening stroll"],
-    ["Start with a relaxed breakfast", "Enjoy free time", "Unwind at sunset"]
-  ]
-};
-
-const tips = [
-  "Keep a little extra money aside for unexpected expenses.",
-  "Check your accommodation's location. Staying near public transport can save time and money.",
-  "Look for free walking tours, public parks and local markets.",
-  "Compare prices, baggage fees, taxes and cancellation rules before booking.",
-  "Leave some unscheduled time for spontaneous discoveries."
-];
-
-let currentTrip = null;
-let currentExpenses = null;
-
-function localDateString(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return year + "-" + month + "-" + day;
-}
-
-function setDateMinimums() {
-  const today = localDateString(new Date());
-
-  startDateInput.min = today;
-  endDateInput.min = startDateInput.value || today;
-}
-
-setDateMinimums();
-
-startDateInput.addEventListener("change", function () {
-  setDateMinimums();
-
-  if (endDateInput.value && endDateInput.value < startDateInput.value) {
-    endDateInput.value = "";
-  }
-});
-
-function money(amount) {
-  return "₹" + Math.round(amount).toLocaleString("en-IN");
-}
-
-function calculateDays(start, end) {
-  const first = new Date(start + "T12:00:00");
-  const last = new Date(end + "T12:00:00");
-
-  return Math.round((last.getTime() - first.getTime()) / 86400000) + 1;
-}
-
-function selectedInterests() {
-  const boxes = document.querySelectorAll('input[name="interest"]:checked');
-  const selected = [];
-
-  boxes.forEach(function (box) {
-    selected.push(box.value);
-  });
-
-  return selected;
-}
-
-function showError(message) {
-  errorBox.textContent = message;
-}
-
-function calculateExpenses() {
-  const rates = styleRates[currentTrip.style];
-  const people = currentTrip.travellers;
-  const days = currentTrip.days;
-  const nights = Math.max(0, days - 1);
-
-  let transportCost = rates.transport * people;
-
-  if (currentTrip.transport === "train") {
-    transportCost = rates.transport * people * 0.35;
-  } else if (currentTrip.transport === "road") {
-    transportCost = rates.local * people * days * 1.8;
-  } else if (currentTrip.transport === "any") {
-    transportCost = rates.transport * people * 0.75;
+  if (!form || !resultsContent || !emptyState) {
+    console.error("TripPlanner: Required HTML elements are missing.");
+    return;
   }
 
-  currentExpenses = {
-    transport: Math.round(transportCost),
-    stay: Math.round(rates.stay * nights * Math.ceil(people / 2)),
-    food: Math.round(rates.food * people * days),
-    local: Math.round(rates.local * people * days),
-    activities: Math.round(rates.activities * people * days)
+  const money = function (amount) {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0
+    }).format(Math.round(amount));
   };
-}
 
-function baseExpenseTotal() {
-  let total = 0;
-
-  Object.keys(currentExpenses).forEach(function (key) {
-    total += currentExpenses[key];
-  });
-
-  return total;
-}
-
-function totalExpenses() {
-  return Math.round(baseExpenseTotal() * 1.10);
-}
-
-function fillExpenseInputs() {
-  const keys = ["transport", "stay", "food", "local", "activities"];
-
-  keys.forEach(function (key) {
-    const inputId = "edit" + key.charAt(0).toUpperCase() + key.slice(1);
-
-    document.getElementById(inputId).value = currentExpenses[key];
-  });
-}
-
-function createExpenseRows() {
-  const container = document.getElementById("costList");
-  container.innerHTML = "";
-
-  Object.keys(currentExpenses).forEach(function (key) {
-    const row = document.createElement("div");
-    row.className = "cost-row";
-
-    const name = document.createElement("span");
-    name.className = "cost-name";
-
-    const dot = document.createElement("span");
-    dot.className = "cost-dot";
-    dot.style.backgroundColor = expenseColors[key];
-
-    const label = document.createElement("span");
-    label.textContent = expenseIcons[key] + " " + expenseNames[key];
-
-    name.appendChild(dot);
-    name.appendChild(label);
-
-    const amount = document.createElement("strong");
-    amount.textContent = money(currentExpenses[key]);
-
-    row.appendChild(name);
-    row.appendChild(amount);
-
-    container.appendChild(row);
-  });
-
-  const bufferRow = document.createElement("div");
-  bufferRow.className = "cost-row";
-
-  const bufferName = document.createElement("span");
-  bufferName.className = "cost-name";
-
-  const bufferDot = document.createElement("span");
-  bufferDot.className = "cost-dot";
-  bufferDot.style.backgroundColor = "#9aa6ad";
-
-  const bufferLabel = document.createElement("span");
-  bufferLabel.textContent = "Contingency buffer (10%)";
-
-  bufferName.appendChild(bufferDot);
-  bufferName.appendChild(bufferLabel);
-
-  const bufferAmount = document.createElement("strong");
-  bufferAmount.textContent = money(baseExpenseTotal() * 0.10);
-
-  bufferRow.appendChild(bufferName);
-  bufferRow.appendChild(bufferAmount);
-
-  container.appendChild(bufferRow);
-
-  const totalRow = document.createElement("div");
-  totalRow.className = "cost-row total-row";
-
-  const totalLabel = document.createElement("span");
-  totalLabel.textContent = "Estimated total";
-
-  const totalValue = document.createElement("strong");
-  totalValue.textContent = money(totalExpenses());
-
-  totalRow.appendChild(totalLabel);
-  totalRow.appendChild(totalValue);
-
-  container.appendChild(totalRow);
-}
-
-function updateBudget() {
-  const total = totalExpenses();
-  const remaining = currentTrip.budget - total;
-  const percentage = currentTrip.budget > 0
-    ? (total / currentTrip.budget) * 100
-    : 0;
-
-  const safePercentage = Math.max(0, Math.min(percentage, 100));
-
-  document.getElementById("totalCost").textContent = money(total);
-  document.getElementById("budgetValue").textContent = money(currentTrip.budget);
-
-  document.getElementById("remainingCost").textContent =
-    (remaining < 0 ? "−" : "") + money(Math.abs(remaining));
-
-  const budgetMessage = document.getElementById("budgetMessage");
-
-  budgetMessage.textContent = remaining >= 0
-    ? money(remaining) + " left in your budget"
-    : money(Math.abs(remaining)) + " over your budget";
-
-  budgetMessage.className = remaining >= 0
-    ? "budget-positive"
-    : "budget-negative";
-
-  document.getElementById("tripDays").textContent =
-    currentTrip.days + (currentTrip.days === 1 ? " day" : " days");
-
-  document.getElementById("travellerCount").textContent =
-    currentTrip.travellers;
-
-  document.getElementById("budgetBar").style.width =
-    safePercentage + "%";
-
-  document.getElementById("budgetBar").style.backgroundColor =
-    remaining >= 0 ? "#2864e8" : "#dc5b55";
-
-  document.getElementById("budgetTrackNote").textContent =
-    percentage > 100
-      ? "Estimated cost is " + Math.round(percentage - 100) + "% above your budget."
-      : Math.round(percentage) + "% of your budget is planned.";
-
-  createExpenseRows();
-}
-
-function getDayActivities(dayIndex) {
-  const interests = currentTrip.interests.length
-    ? currentTrip.interests
-    : ["culture", "food", "relax"];
-
-  const activities = [];
-
-  interests.forEach(function (interest, index) {
-    const options = interestActivities[interest];
-
-    if (options) {
-      const dailySet = options[dayIndex % options.length];
-      activities.push(dailySet[index % dailySet.length]);
-    }
-  });
-
-  if (activities.length === 0) {
-    return [
-      "Explore the destination",
-      "Visit a local attraction",
-      "Enjoy the evening"
-    ];
-  }
-
-  while (activities.length < 3) {
-    activities.push(
-      [
-        "Explore a nearby neighbourhood",
-        "Try a local speciality",
-        "Enjoy some free time"
-      ][activities.length]
-    );
-  }
-
-  return activities.slice(0, 3);
-}
-
-function createItinerary() {
-  const container = document.getElementById("itinerary");
-  container.innerHTML = "";
-
-  const daysToShow = Math.min(currentTrip.days, 14);
-
-  for (let i = 0; i < daysToShow; i++) {
-    const card = document.createElement("article");
-    card.className = "day-card";
-
-    const heading = document.createElement("div");
-    heading.className = "day-heading";
-
-    const dayName = document.createElement("strong");
-    dayName.textContent = "Day " + (i + 1);
-
-    const date = new Date(currentTrip.startDate + "T12:00:00");
-    date.setDate(date.getDate() + i);
-
-    const dateLabel = document.createElement("span");
-    dateLabel.textContent = date.toLocaleDateString("en-IN", {
+  const dateText = function (date) {
+    return new Intl.DateTimeFormat("en-IN", {
       day: "numeric",
-      month: "short"
-    });
-
-    heading.appendChild(dayName);
-    heading.appendChild(dateLabel);
-
-    const body = document.createElement("div");
-    body.className = "day-body";
-
-    const activities = getDayActivities(i);
-    const timeNames = ["Morning", "Afternoon", "Evening"];
-
-    activities.forEach(function (activity, index) {
-      const paragraph = document.createElement("p");
-
-      const time = document.createElement("strong");
-      time.textContent = timeNames[index] + ": ";
-
-      paragraph.appendChild(time);
-      paragraph.appendChild(document.createTextNode(activity));
-
-      body.appendChild(paragraph);
-    });
-
-    card.appendChild(heading);
-    card.appendChild(body);
-    container.appendChild(card);
-  }
-
-  if (currentTrip.days > 14) {
-    const note = document.createElement("p");
-    note.className = "small-note";
-    note.textContent =
-      "Showing the first 14 days of your " + currentTrip.days + "-day trip.";
-
-    container.appendChild(note);
-  }
-
-  if (currentTrip.notes) {
-    const notes = document.createElement("p");
-    notes.className = "small-note";
-    notes.textContent = "Your extra preferences: " + currentTrip.notes;
-
-    container.appendChild(notes);
-  }
-}
-
-function addSearchLink(container, title, description, emoji, url) {
-  const link = document.createElement("a");
-
-  link.className = "search-link";
-  link.href = url;
-  link.target = "_blank";
-  link.rel = "noopener noreferrer";
-
-  const icon = document.createElement("span");
-  icon.className = "search-emoji";
-  icon.textContent = emoji;
-
-  const name = document.createElement("strong");
-  name.textContent = title;
-
-  const detail = document.createElement("small");
-  detail.textContent = description;
-
-  link.appendChild(icon);
-  link.appendChild(name);
-  link.appendChild(detail);
-
-  container.appendChild(link);
-}
-
-function createSearchLinks() {
-  const container = document.getElementById("searchLinks");
-  container.innerHTML = "";
-
-  const route = encodeURIComponent(
-    currentTrip.origin + " to " + currentTrip.destination +
-    " " + currentTrip.startDate + " return " + currentTrip.endDate
-  );
-
-  const destination = encodeURIComponent(currentTrip.destination);
-  const origin = encodeURIComponent(currentTrip.origin);
-
-  addSearchLink(
-    container,
-    "Search flights",
-    "Compare routes and fares",
-    "✈️",
-    "https://www.google.com/travel/flights?q=" + route
-  );
-
-  addSearchLink(
-    container,
-    "Search trains",
-    "Check routes and availability",
-    "🚆",
-    "https://www.google.com/search?q=" +
-      encodeURIComponent(currentTrip.origin + " to " + currentTrip.destination + " train")
-  );
-
-  addSearchLink(
-    container,
-    "Find accommodation",
-    "Explore stays and prices",
-    "🛏️",
-    "https://www.google.com/search?q=" +
-      encodeURIComponent("hotels in " + currentTrip.destination)
-  );
-
-  addSearchLink(
-    container,
-    "Explore attractions",
-    "Find sights and activities",
-    "📍",
-    "https://www.google.com/search?q=" +
-      encodeURIComponent("things to do in " + currentTrip.destination)
-  );
-
-  addSearchLink(
-    container,
-    "Open map",
-    "View the destination on a map",
-    "🗺️",
-    "https://www.openstreetmap.org/search?query=" + destination
-  );
-
-  addSearchLink(
-    container,
-    "Local food",
-    "Search restaurants and local favourites",
-    "🍜",
-    "https://www.google.com/search?q=" +
-      encodeURIComponent("local restaurants in " + currentTrip.destination)
-  );
-
-  addSearchLink(
-    container,
-    "Compare road route",
-    "Explore driving directions",
-    "🚗",
-    "https://www.google.com/maps/dir/" + origin + "/" + destination
-  );
-}
-
-function createTrip() {
-  document.getElementById("tripTitle").textContent =
-    currentTrip.origin + " → " + currentTrip.destination;
-
-  document.getElementById("tripSubtitle").textContent =
-    currentTrip.startDate + " to " + currentTrip.endDate +
-    " · " + currentTrip.days +
-    (currentTrip.days === 1 ? " day" : " days") +
-    " · " + currentTrip.travellers +
-    (currentTrip.travellers === 1 ? " traveller" : " travellers") +
-    " · " + currentTrip.style.charAt(0).toUpperCase() +
-    currentTrip.style.slice(1) + " style";
-
-  calculateExpenses();
-  fillExpenseInputs();
-  updateBudget();
-  createItinerary();
-  createSearchLinks();
-
-  document.getElementById("travelTip").textContent =
-    tips[Math.floor(Math.random() * tips.length)];
-
-  emptyState.hidden = true;
-  resultsContent.hidden = false;
-
-  document.getElementById("results").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-}
-
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
-  showError("");
-
-  const origin = document.getElementById("origin").value.trim();
-  const destination = document.getElementById("destination").value.trim();
-  const startDate = startDateInput.value;
-  const endDate = endDateInput.value;
-  const travellers = Number(document.getElementById("travellers").value);
-  const budget = Number(document.getElementById("budget").value);
-  const today = localDateString(new Date());
-
-  if (!origin || !destination) {
-    showError("Please enter both your starting point and destination.");
-    return;
-  }
-
-  if (origin.toLowerCase() === destination.toLowerCase()) {
-    showError("Your starting point and destination must be different.");
-    return;
-  }
-
-  if (!startDate || !endDate || startDate < today) {
-    showError("Please choose a valid departure date today or later.");
-    return;
-  }
-
-  if (endDate < startDate) {
-    showError("Your return date must be on or after your departure date.");
-    return;
-  }
-
-  if (!Number.isFinite(budget) || budget < 1000) {
-    showError("Please enter a total budget of at least ₹1,000.");
-    return;
-  }
-
-  const days = calculateDays(startDate, endDate);
-
-  if (days > 60) {
-    showError("Please choose a trip lasting 60 days or less.");
-    return;
-  }
-
-  currentTrip = {
-    origin: origin,
-    destination: destination,
-    startDate: startDate,
-    endDate: endDate,
-    travellers: travellers,
-    budget: budget,
-    days: days,
-    style: document.getElementById("style").value,
-    transport: document.getElementById("transport").value,
-    interests: selectedInterests(),
-    notes: document.getElementById("notes").value.trim()
+      month: "short",
+      year: "numeric"
+    }).format(date);
   };
 
-  createTrip();
-});
+  const dayNames = [
+    "Sunday", "Monday", "Tuesday", "Wednesday",
+    "Thursday", "Friday", "Saturday"
+  ];
 
-document.getElementById("updateButton").addEventListener("click", function () {
-  if (!currentTrip || !currentExpenses) return;
+  const interestActivities = {
+    culture: [
+      "Explore local heritage sites and museums.",
+      "Discover historic neighbourhoods and architecture.",
+      "Experience local traditions and cultural landmarks."
+    ],
+    nature: [
+      "Visit a scenic viewpoint, garden or nature trail.",
+      "Explore a nearby beach, lake, hill or green space.",
+      "Spend time outdoors and enjoy the local scenery."
+    ],
+    food: [
+      "Try a popular local breakfast and regional specialities.",
+      "Explore local markets and authentic street food.",
+      "Enjoy a regional meal at a well-reviewed restaurant."
+    ],
+    adventure: [
+      "Explore an outdoor activity available at your destination.",
+      "Look for a guided nature walk or adventure experience.",
+      "Try a suitable outdoor activity after checking safety and availability."
+    ],
+    shopping: [
+      "Explore local markets and souvenir shops.",
+      "Visit shopping streets and discover locally made products.",
+      "Set aside time for souvenirs and a relaxed shopping trip."
+    ],
+    relax: [
+      "Enjoy a slow morning and explore at a comfortable pace.",
+      "Spend time at a peaceful scenic spot.",
+      "Keep some free time for relaxation and spontaneous discoveries."
+    ]
+  };
 
-  const keys = ["transport", "stay", "food", "local", "activities"];
-  const updated = {};
+  const styleRates = {
+    budget: { stay: 1400, food: 550, local: 350, activities: 400 },
+    balanced: { stay: 2800, food: 1000, local: 700, activities: 800 },
+    comfort: { stay: 5500, food: 1800, local: 1400, activities: 1500 }
+  };
 
-  for (let i = 0; i < keys.length; i++) {
-    const inputId =
-      "edit" + keys[i].charAt(0).toUpperCase() + keys[i].slice(1);
+  const transportRates = {
+    train: 900,
+    flight: 4500,
+    bus: 650,
+    car: 2200
+  };
 
-    const input = document.getElementById(inputId);
-    const value = Number(input.value);
+  const transportLabels = {
+    train: "Train",
+    flight: "Flight",
+    bus: "Bus",
+    car: "Car / road trip"
+  };
 
-    if (
-      input.value.trim() === "" ||
-      !Number.isFinite(value) ||
-      value < 0
-    ) {
-      showError("Enter valid non-negative amounts in every cost field.");
-      input.focus();
-      return;
-    }
+  let trip = null;
+  let costs = null;
 
-    updated[keys[i]] = Math.round(value);
+  function showError(message) {
+    error.textContent = message;
+    error.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  currentExpenses = updated;
-  showError("");
-  updateBudget();
-});
+  function clearError() {
+    error.textContent = "";
+  }
 
-document.getElementById("printButton").addEventListener("click", function () {
-  window.print();
-});
+  function addDays(date, amount) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + amount);
+    return result;
+  }
 
-document.getElementById("resetButton").addEventListener("click", function () {
-  form.reset();
+  function readTrip() {
+    const origin = document.getElementById("origin").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+    const start = new Date(startDateInput.value + "T12:00:00");
+    const end = new Date(endDateInput.value + "T12:00:00");
+    const budget = Number(document.getElementById("budget").value);
+    const travellers = Number(document.getElementById("travellers").value);
 
-  currentTrip = null;
-  currentExpenses = null;
+    if (!origin || !destination) {
+      throw new Error("Please enter both your departure city and destination.");
+    }
 
-  errorBox.textContent = "";
-  resultsContent.hidden = true;
-  emptyState.hidden = false;
+    if (origin.toLowerCase() === destination.toLowerCase()) {
+      throw new Error("Your departure city and destination cannot be the same.");
+    }
 
-  setDateMinimums();
+    if (!startDateInput.value || !endDateInput.value ||
+        Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+      throw new Error("Please select valid departure and return dates.");
+    }
 
-  document.getElementById("planner").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (start < today) {
+      throw new Error("Your departure date is in the past. Please select today or a future date.");
+    }
+
+    if (end <= start) {
+      throw new Error("Your return date must be after your departure date.");
+    }
+
+    const days = Math.round((end - start) / 86400000);
+
+    if (days > 60) {
+      throw new Error("For this planner, please choose a trip lasting 60 days or less.");
+    }
+
+    if (!Number.isFinite(budget) || budget < 1000) {
+      throw new Error("Please enter a total budget of at least ₹1,000.");
+    }
+
+    const interests = Array.from(
+      form.querySelectorAll('input[name="interest"]:checked')
+    ).map(function (input) {
+      return input.value;
+    });
+
+    return {
+      origin: origin,
+      destination: destination,
+      start: start,
+      end: end,
+      days: days,
+      budget: budget,
+      travellers: travellers,
+      style: document.getElementById("style").value,
+      transport: document.getElementById("transport").value,
+      interests: interests,
+      notes: document.getElementById("notes").value.trim()
+    };
+  }
+
+  function estimateCosts(data) {
+    const rates = styleRates[data.style] || styleRates.balanced;
+    const people = data.travellers;
+    const days = data.days;
+    const distanceFactor = 1;
+
+    let transport = transportRates[data.transport] * people * distanceFactor;
+
+    if (data.transport === "car") {
+      transport = transportRates.car * Math.max(1, Math.ceil(days / 2));
+    }
+
+    const stay = rates.stay * Math.ceil(days / 2) *
+      Math.max(1, Math.ceil(people / 2));
+
+    const food = rates.food * days * people;
+    const local = rates.local * days * people;
+    const activities = rates.activities * days * people;
+
+    return {
+      transport: Math.round(transport),
+      stay: Math.round(stay),
+      food: Math.round(food),
+      local: Math.round(local),
+      activities: Math.round(activities)
+    };
+  }
+
+  function subtotal() {
+    return costs.transport + costs.stay + costs.food +
+      costs.local + costs.activities;
+  }
+
+  function total() {
+    return Math.round(subtotal() * 1.1);
+  }
+
+  function updateCostInputs() {
+    document.getElementById("editTransport").value = costs.transport;
+    document.getElementById("editStay").value = costs.stay;
+    document.getElementById("editFood").value = costs.food;
+    document.getElementById("editLocal").value = costs.local;
+    document.getElementById("editActivities").value = costs.activities;
+  }
+
+  function renderBudget() {
+    const estimate = total();
+    const remaining = trip.budget - estimate;
+    const percentage = Math.min(100, estimate / trip.budget * 100);
+
+    document.getElementById("totalCost").textContent = money(estimate);
+    document.getElementById("budgetValue").textContent = money(trip.budget);
+    document.getElementById("remainingCost").textContent =
+      (remaining < 0 ? "−" : "") + money(Math.abs(remaining));
+
+    document.getElementById("tripDays").textContent =
+      trip.days + (trip.days === 1 ? " day" : " days");
+
+    document.getElementById("travellerCount").textContent =
+      trip.travellers + (trip.travellers === 1 ? " person" : " people");
+
+    const message = document.getElementById("budgetMessage");
+
+    if (remaining >= 0) {
+      message.textContent = "✓ Your estimate is within your budget.";
+      message.style.color = "#16875b";
+    } else {
+      message.textContent = "⚠ Your estimate exceeds your budget. Try adjusting your costs.";
+      message.style.color = "#b42318";
+    }
+
+    const bar = document.getElementById("budgetBar");
+    bar.style.width = percentage + "%";
+    bar.classList.toggle("over-budget", remaining < 0);
+
+    document.getElementById("budgetTrackNote").textContent =
+      Math.round(percentage) + "% of your budget is estimated to be used, including the 10% contingency.";
+
+    document.getElementById("remainingCost").style.color =
+      remaining < 0 ? "#b42318" : "#16875b";
+  }
+
+  function renderCostLinks() {
+    const origin = encodeURIComponent(trip.origin);
+    const destination = encodeURIComponent(trip.destination);
+    const date = encodeURIComponent(trip.startDateString);
+    const returnDate = encodeURIComponent(trip.endDateString);
+    const place = encodeURIComponent(trip.destination);
+    const transport = trip.transport;
+
+    const links = [
+      {
+        title: "Compare transport",
+        description: "Search " + transportLabels[transport] + " options",
+        url: transport === "flight"
+          ? "https://www.google.com/travel/flights?q=" + origin + "%20to%20" + destination
+          : transport === "train"
+            ? "https://www.google.com/search?q=train+from+" + origin + "+to+" + destination
+            : transport === "bus"
+              ? "https://www.google.com/search?q=bus+from+" + origin + "+to+" + destination
+              : "https://www.google.com/maps/dir/" + origin + "/" + destination
+      },
+      {
+        title: "Find accommodation",
+        description: "Compare hotels and stays",
+        url: "https://www.google.com/search?q=hotels+in+" + place
+      },
+      {
+        title: "Discover attractions",
+        description: "Find popular places to visit",
+        url: "https://www.google.com/search?q=things+to+do+in+" + place
+      },
+      {
+        title: "Explore local food",
+        description: "Find restaurants and local favourites",
+        url: "https://www.google.com/search?q=local+food+in+" + place
+      },
+      {
+        title: "Open destination map",
+        description: "Explore the destination on Google Maps",
+        url: "https://www.google.com/maps/search/?api=1&query=" + place
+      },
+      {
+        title: "Search travel dates",
+        description: date + " to " + returnDate,
+        url: "https://www.google.com/search?q=" + origin + "+to+" + destination +
+          "+travel+" + date + "+to+" + returnDate
+      }
+    ];
+
+    const container = document.getElementById("searchLinks");
+    container.replaceChildren();
+
+    links.forEach(function (item) {
+      const link = document.createElement("a");
+      link.className = "search-link";
+      link.href = item.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+
+      const text = document.createElement("span");
+      text.textContent = item.title;
+
+      const description = document.createElement("small");
+      description.textContent = item.description;
+      text.appendChild(description);
+
+      const arrow = document.createElement("span");
+      arrow.textContent = "↗";
+      arrow.setAttribute("aria-hidden", "true");
+
+      link.append(text, arrow);
+      container.appendChild(link);
+    });
+  }
+
+  function buildActivityList(dayIndex) {
+    const activities = [];
+    const interests = trip.interests.length ? trip.interests : ["culture", "food", "nature"];
+
+    interests.forEach(function (interest) {
+      const options = interestActivities[interest];
+      if (options) {
+        activities.push(options[dayIndex % options.length]);
+      }
+    });
+
+    if (activities.length === 0) {
+      activities.push("Explore the destination and ask local guides for recommendations.");
+    }
+
+    if (dayIndex === 0) {
+      activities.unshift("Arrive, check in and get familiar with the neighbourhood.");
+    }
+
+    if (dayIndex === trip.days - 1) {
+      activities.push("Allow time to pack, check out and prepare for your return journey.");
+    }
+
+    return activities.slice(0, 4);
+  }
+
+  function renderItinerary() {
+    const container = document.getElementById("itinerary");
+    container.replaceChildren();
+
+    const visibleDays = Math.min(trip.days, 14);
+
+    for (let i = 0; i < visibleDays; i++) {
+      const date = addDays(trip.start, i);
+      const card = document.createElement("article");
+      card.className = "day-card";
+
+      const dateLabel = document.createElement("div");
+      dateLabel.className = "day-date";
+      dateLabel.textContent = "DAY " + (i + 1) + " · " + dateText(date);
+
+      const heading = document.createElement("h4");
+      if (i === 0) {
+        heading.textContent = "Arrival & first discoveries";
+      } else if (i === trip.days - 1) {
+        heading.textContent = "Final explorations & return";
+      } else {
+        heading.textContent = dayNames[date.getDay()] + " in " + trip.destination;
+      }
+
+      const description = document.createElement("p");
+      description.textContent = i === 0
+        ? "Settle in and start exploring at a relaxed pace."
+        : "Explore " + trip.destination + " at a pace that suits your travel style.";
+
+      const list = document.createElement("ul");
+      buildActivityList(i).forEach(function (activity) {
+        const item = document.createElement("li");
+        item.textContent = activity;
+        list.appendChild(item);
+      });
+
+      card.append(dateLabel, heading, description, list);
+      container.appendChild(card);
+    }
+
+    if (trip.days > 14) {
+      const note = document.createElement("p");
+      note.className = "small-note";
+      note.textContent = "Showing the first 14 days. Your trip lasts " + trip.days +
+        " days; use this as a starting point for planning the remaining days.";
+      container.appendChild(note);
+    }
+  }
+
+  function renderTrip() {
+    document.getElementById("tripTitle").textContent =
+      trip.origin + " → " + trip.destination;
+
+    document.getElementById("tripSubtitle").textContent =
+      dateText(trip.start) + " – " + dateText(trip.end) +
+      " · " + transportLabels[trip.transport] +
+      " · " + trip.travellers + (trip.travellers === 1 ? " traveller" : " travellers");
+
+    renderBudget();
+    renderCostLinks();
+    renderItinerary();
+
+    const note = document.getElementById("travelTip");
+    const interests = trip.interests.length
+      ? trip.interests.join(", ")
+      : "culture, food and nature";
+
+    note.textContent = "Your travel style: " +
+      trip.style.charAt(0).toUpperCase() + trip.style.slice(1) +
+      ". Your selected interests: " + interests + "." +
+      (trip.notes ? " Your note: " + trip.notes : "") +
+      " Activity suggestions are inspiration, not confirmed bookings.";
+
+    emptyState.hidden = true;
+    resultsContent.hidden = false;
+
+    resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    clearError();
+
+    try {
+      trip = readTrip();
+      trip.startDateString = startDateInput.value;
+      trip.endDateString = endDateInput.value;
+      costs = estimateCosts(trip);
+
+      updateCostInputs();
+      renderTrip();
+    } catch (exception) {
+      showError(exception.message || "Something went wrong. Please check your trip details.");
+    }
   });
+
+  document.getElementById("updateButton").addEventListener("click", function () {
+    if (!trip || !costs) return;
+
+    const fields = [
+      ["editTransport", "transport"],
+      ["editStay", "stay"],
+      ["editFood", "food"],
+      ["editLocal", "local"],
+      ["editActivities", "activities"]
+    ];
+
+    for (let i = 0; i < fields.length; i++) {
+      const input = document.getElementById(fields[i][0]);
+      const value = Number(input.value);
+
+      if (input.value.trim() === "" || !Number.isFinite(value) || value < 0) {
+        input.focus();
+        document.getElementById("budgetMessage").textContent =
+          "Please enter valid non-negative values for all costs.";
+        document.getElementById("budgetMessage").style.color = "#b42318";
+        return;
+      }
+
+      costs[fields[i][1]] = value;
+    }
+
+    renderBudget();
+  });
+
+  document.getElementById("resetButton").addEventListener("click", function () {
+    form.reset();
+    trip = null;
+    costs = null;
+    clearError();
+
+    resultsContent.hidden = true;
+    emptyState.hidden = false;
+
+    document.getElementById("planner").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+
+  document.getElementById("printButton").addEventListener("click", function () {
+    window.print();
+  });
+
+  startDateInput.addEventListener("change", function () {
+    endDateInput.min = startDateInput.value;
+
+    if (endDateInput.value && endDateInput.value <= startDateInput.value) {
+      endDateInput.value = "";
+    }
+  });
+
+  const today = new Date();
+  const todayString = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0")
+  ].join("-");
+
+  startDateInput.min = todayString;
+  endDateInput.min = todayString;
 });
