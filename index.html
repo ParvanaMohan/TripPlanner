@@ -4,188 +4,226 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Plan your next adventure with Wayfinder.">
-  <title>Wayfinder — Your Trip Planner</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="./style.css">
-  <script src="./script.js" defer></script>
+  <title>Wayfinder - Travel Planner</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/script.js" defer></script>
 </head>
-
 <body>
-  <header class="topbar">
-    <a class="brand" href="./">
-      <span class="brand-icon">✳</span>
-      wayfinder<span class="brand-dot">.</span>
-    </a>
-    <span class="header-note">Your next adventure starts here</span>
-  </header>
 
-  <main class="layout">
-    <section class="intro">
-      <span class="eyebrow">YOUR PERSONAL TRIP PLANNER</span>
-      <h1>Less planning.<br>More <span>wandering.</span></h1>
-      <p class="intro-text">
-        Tell us what your dream trip looks like. Build a simple,
-        personalized plan for your next adventure.
-      </p>
+<header class="header">
+  <a href="#" class="logo">✦ Wayfinder</a>
+  <nav>
+    <a href="#planner">Plan a Trip</a>
+    <a href="#how">How It Works</a>
+  </nav>
+</header>
 
-      <div class="feature-list">
-        <div class="feature">
-          <span class="feature-icon">✈</span>
-          <div>
-            <strong>Flight ideas</strong>
-            <p>Explore ways to reach your destination.</p>
-          </div>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">⌂</span>
-          <div>
-            <strong>Stay suggestions</strong>
-            <p>Find the right area for your budget.</p>
-          </div>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">✦</span>
-          <div>
-            <strong>Local experiences</strong>
-            <p>Discover sights, food and activities.</p>
-          </div>
+<section class="hero">
+  <div class="hero-content">
+    <p class="eyebrow">YOUR PERSONAL TRAVEL COMPANION</p>
+    <h1>Make room for<br><span>somewhere new.</span></h1>
+    <p>Plan your next trip around your interests, dates and budget. Explore travel options and estimate your total expenses in one place.</p>
+    <a href="#planner" class="button">Plan My Trip →</a>
+    <p class="small">Free to use · No API keys required</p>
+  </div>
+
+  <div class="hero-art">
+    <div class="sun"></div>
+    <div class="mountain back"></div>
+    <div class="mountain front"></div>
+    <div class="lake"></div>
+    <span class="art-label">Take the scenic route</span>
+  </div>
+</section>
+
+<section id="planner" class="section">
+  <div class="section-heading">
+    <p class="eyebrow">LET'S GET YOU THERE</p>
+    <h2>Your trip, your way.</h2>
+    <p>Enter your travel details to create your itinerary and estimated budget.</p>
+  </div>
+
+  <form id="tripForm" class="form-card">
+    <div class="form-grid">
+
+      <div class="field">
+        <label for="origin">Starting city or airport</label>
+        <input id="origin" required placeholder="e.g. Kochi (COK)">
+      </div>
+
+      <div class="field">
+        <label for="destination">Destination</label>
+        <input id="destination" required placeholder="e.g. Jaipur">
+      </div>
+
+      <div class="field">
+        <label for="startDate">Departure date</label>
+        <input id="startDate" type="date" required>
+      </div>
+
+      <div class="field">
+        <label for="endDate">Return date</label>
+        <input id="endDate" type="date" required>
+      </div>
+
+      <div class="field">
+        <label for="travellers">Number of travellers</label>
+        <select id="travellers">
+          <option value="1">1 traveller</option>
+          <option value="2" selected>2 travellers</option>
+          <option value="3">3 travellers</option>
+          <option value="4">4 travellers</option>
+          <option value="5">5 travellers</option>
+          <option value="6">6 travellers</option>
+          <option value="7">7 travellers</option>
+          <option value="8">8 travellers</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="budget">Total budget (₹)</label>
+        <input id="budget" type="number" min="1000" required placeholder="e.g. 25000">
+      </div>
+
+      <div class="field">
+        <label for="style">Travel style</label>
+        <select id="style">
+          <option value="budget">Budget-friendly</option>
+          <option value="balanced" selected>Balanced</option>
+          <option value="comfort">Comfort-first</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="transport">Preferred transport</label>
+        <select id="transport">
+          <option value="flight">Flight</option>
+          <option value="train">Train</option>
+          <option value="bus">Bus</option>
+          <option value="road">Car / road trip</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>What do you enjoy?</label>
+        <div class="interests">
+          <label><input type="checkbox" name="interest" value="culture" checked> 🏛️ Culture & history</label>
+          <label><input type="checkbox" name="interest" value="nature"> 🌿 Nature</label>
+          <label><input type="checkbox" name="interest" value="food"> 🍜 Food & cafés</label>
+          <label><input type="checkbox" name="interest" value="adventure"> 🧗 Adventure</label>
+          <label><input type="checkbox" name="interest" value="shopping"> 🛍️ Shopping</label>
+          <label><input type="checkbox" name="interest" value="relax"> ☀️ Relaxation</label>
         </div>
       </div>
 
-      <p class="fine-print">
-        A lightweight trip planner hosted on GitHub Pages.
-      </p>
+      <div class="field full">
+        <label for="notes">Additional preferences (optional)</label>
+        <textarea id="notes" rows="3" placeholder="e.g. travelling with parents, prefer peaceful places, want a beach day..."></textarea>
+      </div>
+
+    </div>
+
+    <p id="error" class="error" hidden></p>
+    <button type="submit" class="button">Create My Trip →</button>
+    <p class="small">All costs are estimates. External websites are used to search for travel options.</p>
+  </form>
+</section>
+
+<section id="results" class="section" hidden>
+  <div class="results-heading">
+    <div>
+      <p class="eyebrow">YOUR TRIP PREVIEW</p>
+      <h2 id="tripTitle">Your trip</h2>
+      <p id="tripSubtitle"></p>
+    </div>
+    <button id="editButton" class="secondary">Edit details</button>
+  </div>
+
+  <div class="summary-grid">
+    <article class="summary featured">
+      <span>Estimated total</span>
+      <strong id="totalCost">₹0</strong>
+      <small id="budgetMessage"></small>
+    </article>
+    <article class="summary">
+      <span>Your budget</span>
+      <strong id="budgetValue">₹0</strong>
+      <small>For the whole group</small>
+    </article>
+    <article class="summary">
+      <span>Budget remaining</span>
+      <strong id="remainingCost">₹0</strong>
+      <small>After estimated expenses</small>
+    </article>
+  </div>
+
+  <div class="two-columns">
+    <section class="card">
+      <p class="eyebrow">THE NUMBERS</p>
+      <h3>Trip cost breakdown</h3>
+      <div id="costList"></div>
+      <div class="cost-total">
+        <span>Estimated trip total</span>
+        <strong id="bottomTotal">₹0</strong>
+      </div>
+      <p class="small">These are editable estimates, not verified travel-provider prices.</p>
     </section>
 
-    <section class="planner-card">
-      <div class="card-heading">
-        <div>
-          <span class="eyebrow">LET'S GET STARTED</span>
-          <h2>Plan your trip</h2>
-        </div>
-        <span class="heading-icon">↗</span>
-      </div>
-
-      <form id="trip-form">
-        <div class="field-row">
-          <label>
-            From
-            <input name="origin" type="text" placeholder="Kozhikode, India" required>
-          </label>
-          <label>
-            Destination
-            <input name="destination" type="text" placeholder="Lisbon, Portugal" required>
-          </label>
-        </div>
-
-        <div class="field-row">
-          <label>
-            Departure
-            <input name="start" type="date" required>
-          </label>
-          <label>
-            Return
-            <input name="end" type="date" required>
-          </label>
-        </div>
-
-        <div class="field-row">
-          <label>
-            Travellers
-            <input name="travellers" type="number" min="1" max="50" value="2" required>
-          </label>
-          <label>
-            Budget
-            <select name="budget">
-              <option value="budget">Budget-friendly</option>
-              <option value="mid-range" selected>Mid-range</option>
-              <option value="luxury">Luxury</option>
-            </select>
-          </label>
-        </div>
-
-        <label>
-          What do you enjoy?
-          <input name="interests" type="text" placeholder="Street food, beaches, history...">
-        </label>
-
-        <button id="plan-button" type="submit">
-          <span>Build my trip plan</span>
-          <span aria-hidden="true">→</span>
-        </button>
-        <p class="form-note">Your details stay in this browser; no account required.</p>
-      </form>
-
-      <div id="results" class="results" hidden aria-live="polite">
-        <div class="results-heading">
-          <span class="eyebrow">YOUR TRIP OVERVIEW</span>
-          <button type="button" id="reset-button" class="reset-button">Start over</button>
-        </div>
-
-        <h2 id="trip-title"></h2>
-        <p id="trip-summary" class="trip-summary"></p>
-
-        <div class="stat-grid">
-          <div class="stat">
-            <span>Duration</span>
-            <strong id="trip-duration"></strong>
-          </div>
-          <div class="stat">
-            <span>Travellers</span>
-            <strong id="trip-travellers"></strong>
-          </div>
-          <div class="stat">
-            <span>Budget style</span>
-            <strong id="trip-budget"></strong>
-          </div>
-        </div>
-
-        <div class="results-grid">
-          <article class="result-section">
-            <span class="result-icon">✈</span>
-            <h3>Getting there</h3>
-            <div id="flight-output"></div>
-          </article>
-
-          <article class="result-section">
-            <span class="result-icon">⌂</span>
-            <h3>Where to stay</h3>
-            <div id="stay-output"></div>
-          </article>
-
-          <article class="result-section">
-            <span class="result-icon">✦</span>
-            <h3>Things to explore</h3>
-            <div id="activity-output"></div>
-          </article>
-        </div>
-
-        <section class="itinerary-section">
-          <span class="eyebrow">YOUR DAY-BY-DAY OUTLINE</span>
-          <h3>A little plan, a lot of adventure.</h3>
-          <div id="itinerary-output"></div>
-        </section>
-
-        <button id="download-button" class="secondary-button" type="button">
-          Download trip plan ↓
-        </button>
-
-        <p class="disclaimer">
-          Suggestions are general planning ideas, not live booking results.
-          Verify prices, opening hours and travel requirements before booking.
-        </p>
-      </div>
+    <section class="card">
+      <p class="eyebrow">COMPARE BEFORE BOOKING</p>
+      <h3>Search travel options</h3>
+      <div id="searchLinks"></div>
+      <p class="small">Confirm actual prices, availability, baggage and cancellation rules on the external websites.</p>
     </section>
-  </main>
+  </div>
 
-  <footer>
-    <a class="brand footer-brand" href="./">wayfinder<span class="brand-dot">.</span></a>
-    <span>Made for curious travellers.</span>
-  </footer>
+  <section class="card">
+    <div class="results-heading">
+      <div>
+        <p class="eyebrow">MADE FOR YOUR INTERESTS</p>
+        <h3>Day-by-day itinerary</h3>
+      </div>
+      <button id="printButton" class="secondary">Print / Save PDF</button>
+    </div>
+    <p class="small">These are suggested activity ideas. Use the search links to find real attractions at your destination.</p>
+    <div id="itinerary"></div>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">MAKE IT YOURS</p>
+    <h3>Adjust your estimates</h3>
+    <p class="small">Enter prices you find. The total and remaining budget will update.</p>
+    <div id="estimateFields" class="estimate-grid"></div>
+    <button id="updateButton" class="button">Update Total ↻</button>
+  </section>
+</section>
+
+<section id="how" class="section how-section">
+  <p class="eyebrow">SIMPLE, TRANSPARENT, USEFUL</p>
+  <h2>Plan smarter, not harder.</h2>
+  <div class="how-grid">
+    <article>
+      <span>01</span>
+      <h3>Share your plans</h3>
+      <p>Enter your destination, dates, group size, interests and budget.</p>
+    </article>
+    <article>
+      <span>02</span>
+      <h3>Compare options</h3>
+      <p>Open flight, hotel, attraction and map searches.</p>
+    </article>
+    <article>
+      <span>03</span>
+      <h3>Fine-tune your budget</h3>
+      <p>Update estimated expenses and see how much money remains.</p>
+    </article>
+  </div>
+</section>
+
+<footer class="footer">
+  <a href="#" class="logo">✦ Wayfinder</a>
+  <p>Made for thoughtful trips. Costs are estimates for planning only.</p>
+</footer>
+
 </body>
 </html>
