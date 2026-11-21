@@ -2,243 +2,338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Plan your dream trip with personalized itineraries, travel ideas and budget estimates.">
-  <title>Wayfarer — Your Personal Travel Planner</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="./css/style.css">
-<script src="./js/script.js" defer></script>
+    <title>TripPlanner | Plan Your Perfect Trip</title>
+    <meta name="description" content="Plan your next trip with personalized itineraries, budget estimates, travel details and destination suggestions.">
 
+    <!-- CSS file in the main repository -->
+    <link rel="stylesheet" href="./style.css">
+
+    <!-- JavaScript file in the main repository -->
+    <script src="./script.js" defer></script>
 </head>
+
 <body>
-  <header class="navbar">
-    <a href="#" class="brand">
-      <span class="brand-icon">✈</span>
-      <span>wayfarer<span class="brand-dot">.</span><small>YOUR NEXT CHAPTER</small></span>
-    </a>
+    <header class="topbar">
+        <a href="./index.html" class="brand">
+            <span class="brand-icon">✈</span>
+            TripPlanner<span class="brand-dot">.</span>
+        </a>
 
-    <nav class="nav-links">
-      <a href="#home">Home</a>
-      <a href="#destinations">Explore</a>
-      <a href="#planner">Plan a trip</a>
-      <a href="#features">Why Wayfarer?</a>
-    </nav>
+        <nav class="nav-links">
+            <a href="#planner">Plan a trip</a>
+            <a href="#results">Your itinerary</a>
+        </nav>
 
-    <a class="nav-button" href="#planner">Start exploring <span>↗</span></a>
-    <button class="menu-button" id="menuButton" aria-label="Toggle navigation">☰</button>
-  </header>
+        <a href="#planner" class="nav-button">Start planning ↗</a>
+    </header>
 
-  <main>
-    <section class="hero" id="home">
-      <div class="hero-shade"></div>
-      <div class="hero-content">
-        <span class="eyebrow light-eyebrow">✦ YOUR NEXT ADVENTURE STARTS HERE</span>
-        <h1>The world is big.<br>Make it <span>yours.</span></h1>
-        <p>Dream it. Plan it. Go live it. Your next unforgettable journey starts with a little inspiration.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#planner">Plan my trip <span>↗</span></a>
-          <a class="hero-text-link" href="#destinations">Find inspiration ↓</a>
-        </div>
-        <div class="hero-note"><span class="avatar-stack">✦ ✈ ☀</span> Made for curious minds and open roads.</div>
-      </div>
-      <div class="hero-stamp"><span>✦</span> COLLECT<br>MEMORIES,<br>NOT THINGS.</div>
-      <div class="hero-bottom"><span>01 / DISCOVER</span><span>EVERY JOURNEY HAS A STORY ↓</span></div>
-    </section>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">✦ YOUR NEXT ADVENTURE STARTS HERE</span>
 
-    <section class="quick-search" id="planner">
-      <div class="section-kicker">LET'S GET YOU THERE</div>
-      <div class="search-heading">
-        <div>
-          <h2>Your next trip, <span>sorted.</span></h2>
-          <p>Tell us what you're dreaming of. We'll help you plan the details.</p>
-        </div>
-        <span class="search-decoration">✳</span>
-      </div>
+                <h1>Travel more.<br>
+                    <span>Worry less.</span>
+                </h1>
 
-      <form id="tripForm">
-        <div class="form-grid">
-          <label class="field">
-            <span>FROM</span>
-            <span class="field-icon">⌖</span>
-            <input id="origin" type="text" placeholder="e.g. Kochi, India" required>
-          </label>
-          <label class="field">
-            <span>DESTINATION</span>
-            <span class="field-icon">◎</span>
-            <input id="destination" type="text" placeholder="Where to?" required>
-          </label>
-          <label class="field">
-            <span>DEPARTURE</span>
-            <span class="field-icon">▦</span>
-            <input id="startDate" type="date" required>
-          </label>
-          <label class="field">
-            <span>RETURN</span>
-            <span class="field-icon">▦</span>
-            <input id="endDate" type="date" required>
-          </label>
-          <label class="field">
-            <span>TRAVELLERS</span>
-            <span class="field-icon">♙</span>
-            <select id="travellers">
-              <option value="1">1 traveller</option>
-              <option value="2" selected>2 travellers</option>
-              <option value="3">3 travellers</option>
-              <option value="4">4 travellers</option>
-              <option value="5">5 travellers</option>
-              <option value="6">6 travellers</option>
-              <option value="7">7 travellers</option>
-              <option value="8">8 travellers</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>TOTAL BUDGET (₹)</span>
-            <span class="field-icon">₹</span>
-            <input id="budget" type="number" min="1000" step="500" placeholder="e.g. 30000" required>
-          </label>
-        </div>
+                <p>
+                    Your dream trip, planned around your destination,
+                    dates, travel style and budget. Let's make it happen.
+                </p>
 
-        <div class="form-options">
-          <div class="option-group">
-            <span class="option-title">YOUR TRAVEL VIBE</span>
-            <div class="choice-row">
-              <label class="choice"><input type="radio" name="style" value="budget"><span>🎒 Budget</span></label>
-              <label class="choice"><input type="radio" name="style" value="balanced" checked><span>🌿 Balanced</span></label>
-              <label class="choice"><input type="radio" name="style" value="comfort"><span>✨ Comfort</span></label>
+                <a href="#planner" class="hero-button">
+                    Plan my trip <span>→</span>
+                </a>
+
+                <div class="hero-stats">
+                    <div>
+                        <strong>01</strong>
+                        <span>Choose your destination</span>
+                    </div>
+                    <div>
+                        <strong>02</strong>
+                        <span>Set your budget</span>
+                    </div>
+                    <div>
+                        <strong>03</strong>
+                        <span>Get your plan</span>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="option-group">
-            <span class="option-title">HOW WOULD YOU TRAVEL?</span>
-            <select id="transport" class="transport-select">
-              <option value="flight">✈ Flight</option>
-              <option value="train">🚆 Train</option>
-              <option value="road">🚗 Road trip</option>
-            </select>
-          </div>
-        </div>
 
-        <div class="option-group interests-group">
-          <span class="option-title">WHAT ARE YOU IN THE MOOD FOR?</span>
-          <div class="choice-row">
-            <label class="choice"><input type="checkbox" name="interest" value="culture" checked><span>🏛 Culture</span></label>
-            <label class="choice"><input type="checkbox" name="interest" value="nature"><span>🌿 Nature</span></label>
-            <label class="choice"><input type="checkbox" name="interest" value="food"><span>🍜 Food</span></label>
-            <label class="choice"><input type="checkbox" name="interest" value="adventure"><span>🧗 Adventure</span></label>
-            <label class="choice"><input type="checkbox" name="interest" value="shopping"><span>🛍 Shopping</span></label>
-            <label class="choice"><input type="checkbox" name="interest" value="relax"><span>🌊 Relaxation</span></label>
-          </div>
-        </div>
+            <div class="hero-visual">
+                <div class="hero-image">
+                    <div class="image-overlay">
+                        <span>YOUR NEXT ESCAPE</span>
+                        <h2>Somewhere<br>beautiful.</h2>
+                    </div>
+                </div>
 
-        <label class="field notes-field">
-          <span>ANYTHING ELSE WE SHOULD KNOW? (OPTIONAL)</span>
-          <textarea id="notes" rows="2" placeholder="A birthday trip, hidden gems, travelling with family..."></textarea>
-        </label>
+                <div class="floating-card">
+                    <span class="floating-icon">🌍</span>
+                    <div>
+                        <strong>Your journey, your way</strong>
+                        <p>Made for your budget</p>
+                    </div>
+                </div>
 
-        <p id="error" class="error-message" role="alert"></p>
-        <button type="submit" class="button button-primary submit-button">Build my trip <span>↗</span></button>
-        <p class="form-footnote">✦ Free to use · No account needed · Your adventure, your way</p>
-      </form>
-    </section>
+                <div class="floating-sticker">✦ Let's explore!</div>
+            </div>
+        </section>
 
-    <section class="section destinations-section" id="destinations">
-      <div class="section-topline"><span class="section-kicker">A LITTLE WANDERLUST</span><span class="muted">HANDPICKED INSPIRATION</span></div>
-      <div class="section-heading">
-        <h2>Places that stay<br>with <span>you.</span></h2>
-        <p>From slow mornings by the sea to cities that never sleep, your next favourite place is out there.</p>
-      </div>
+        <section class="planner-section" id="planner">
+            <div class="section-heading">
+                <span class="eyebrow">✦ LET'S GET PLANNING</span>
+                <h2>Build your perfect trip</h2>
+                <p>Tell us what you have in mind. We'll help you plan the rest.</p>
+            </div>
 
-      <div class="destination-grid">
-        <button type="button" class="destination-card destination-large" data-destination="Bali, Indonesia" data-origin="Kochi, India">
-          <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1000&q=85" alt="Tropical Bali landscape" loading="lazy">
-          <span class="destination-tag">ISLAND ESCAPE</span>
-          <span class="destination-info"><span><strong>Bali, Indonesia</strong><small>Temples, beaches & slow living</small></span><span class="round-arrow">↗</span></span>
-        </button>
-        <button type="button" class="destination-card" data-destination="Paris, France" data-origin="Kochi, India">
-          <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=85" alt="Paris city and Eiffel Tower" loading="lazy">
-          <span class="destination-tag">CITY OF LOVE</span>
-          <span class="destination-info"><span><strong>Paris, France</strong><small>Art, cafés & romance</small></span><span class="round-arrow">↗</span></span>
-        </button>
-        <button type="button" class="destination-card" data-destination="Swiss Alps, Switzerland" data-origin="Kochi, India">
-          <img src="https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=800&q=85" alt="Swiss mountain scenery" loading="lazy">
-          <span class="destination-tag">MOUNTAIN MAGIC</span>
-          <span class="destination-info"><span><strong>Swiss Alps</strong><small>Fresh air & big views</small></span><span class="round-arrow">↗</span></span>
-        </button>
-      </div>
-      <p class="destination-hint">Choose a destination to add it to your trip form. ✦</p>
-    </section>
+            <div class="layout">
+                <form class="planner-card" id="tripForm">
+                    <div class="card-heading">
+                        <span class="card-icon">🧭</span>
+                        <div>
+                            <h3>Your travel details</h3>
+                            <p>Every great adventure starts with a plan.</p>
+                        </div>
+                    </div>
 
-    <section class="features-section" id="features">
-      <div class="section-kicker">LESS STRESS, MORE STORIES</div>
-      <div class="section-heading">
-        <h2>Everything you need.<br><span>Nothing you don't.</span></h2>
-        <p>A little organisation goes a long way when there's a whole world to explore.</p>
-      </div>
-      <div class="feature-grid">
-        <article class="feature-card"><span class="feature-icon icon-blue">↗</span><h3>Know your budget</h3><p>Estimate transport, stays, food and activities before you go.</p></article>
-        <article class="feature-card"><span class="feature-icon icon-green">▤</span><h3>Day-by-day plans</h3><p>Turn your travel dates and interests into an easy itinerary.</p></article>
-        <article class="feature-card"><span class="feature-icon icon-orange">⌖</span><h3>Find the good stuff</h3><p>Explore flights, hotels, food spots and places worth visiting.</p></article>
-        <article class="feature-card"><span class="feature-icon icon-purple">♡</span><h3>Make it your own</h3><p>Choose your travel style and adjust estimates to suit your plans.</p></article>
-      </div>
-    </section>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="origin">From</label>
+                            <input
+                                type="text"
+                                id="origin"
+                                name="origin"
+                                placeholder="e.g. Kochi"
+                                required
+                            >
+                        </div>
 
-    <section class="results-section" id="results" hidden>
-      <div class="results-top">
-        <div><span class="section-kicker">YOUR ADVENTURE, MAPPED OUT</span><h2 id="tripTitle">Your trip plan</h2><p id="tripSubtitle"></p></div>
-        <button id="printButton" class="button button-outline" type="button">Print plan ↗</button>
-      </div>
+                        <div class="form-group">
+                            <label for="destination">Destination</label>
+                            <input
+                                type="text"
+                                id="destination"
+                                name="destination"
+                                placeholder="e.g. Goa"
+                                required
+                            >
+                        </div>
+                    </div>
 
-      <div class="results-summary">
-        <article class="metric-card metric-main"><span>ESTIMATED TOTAL</span><strong id="totalCost">₹0</strong><small id="budgetMessage"></small><div class="budget-track"><span id="budgetBar"></span></div><small id="budgetValue"></small></article>
-        <article class="metric-card"><span>TRIP LENGTH</span><strong id="tripDays">0 days</strong><small>Your planned getaway</small></article>
-        <article class="metric-card"><span>TRAVELLERS</span><strong id="travellerCount">2</strong><small>Ready to explore</small></article>
-      </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">Departure date</label>
+                            <input type="date" id="startDate" name="startDate" required>
+                        </div>
 
-      <div class="results-grid">
-        <article class="panel budget-panel">
-          <div class="panel-heading"><div><span class="section-kicker">FOLLOW THE MONEY</span><h3>Your budget breakdown</h3></div><span class="panel-emoji">◉</span></div>
-          <div id="costList" class="cost-list"></div>
-          <p class="estimate-note">These are illustrative estimates, not live travel prices. Edit them to suit your plans.</p>
-          <div class="edit-grid">
-            <label>Transport (₹)<input type="number" id="editTransport" min="0"></label>
-            <label>Stay (₹)<input type="number" id="editStay" min="0"></label>
-            <label>Food (₹)<input type="number" id="editFood" min="0"></label>
-            <label>Local travel (₹)<input type="number" id="editLocal" min="0"></label>
-            <label>Activities (₹)<input type="number" id="editActivities" min="0"></label>
-          </div>
-          <button type="button" id="updateButton" class="button button-primary full-button">Update my budget ↗</button>
-        </article>
+                        <div class="form-group">
+                            <label for="endDate">Return date</label>
+                            <input type="date" id="endDate" name="endDate" required>
+                        </div>
+                    </div>
 
-        <article class="panel itinerary-panel">
-          <div class="panel-heading"><div><span class="section-kicker">YOUR DAYS, YOUR WAY</span><h3>The itinerary</h3></div><span class="panel-emoji">✳</span></div>
-          <div id="itinerary" class="itinerary-list"></div>
-        </article>
-      </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="travellers">Travellers</label>
+                            <select id="travellers" name="travellers" required>
+                                <option value="1">1 traveller</option>
+                                <option value="2" selected>2 travellers</option>
+                                <option value="3">3 travellers</option>
+                                <option value="4">4 travellers</option>
+                                <option value="5">5 travellers</option>
+                                <option value="6">6 travellers</option>
+                                <option value="7">7 travellers</option>
+                                <option value="8">8 travellers</option>
+                                <option value="9">9 travellers</option>
+                                <option value="10">10 travellers</option>
+                            </select>
+                        </div>
 
-      <article class="panel search-panel">
-        <div class="panel-heading"><div><span class="section-kicker">TAKE THE NEXT STEP</span><h3>Make it happen</h3></div></div>
-        <p>Explore real options on external websites. Prices and availability can change.</p>
-        <div id="searchLinks" class="search-links"></div>
-      </article>
+                        <div class="form-group">
+                            <label for="budget">Total budget (₹)</label>
+                            <input
+                                type="number"
+                                id="budget"
+                                name="budget"
+                                min="1"
+                                placeholder="e.g. 25000"
+                                required
+                            >
+                        </div>
+                    </div>
 
-      <article class="panel tips-panel"><span class="feature-icon icon-orange">✦</span><div><h3>A little travel wisdom</h3><p id="travelTip"></p></div></article>
-    </section>
+                    <div class="form-group">
+                        <label for="style">Travel style</label>
+                        <select id="style" name="style">
+                            <option value="balanced">✨ Balanced — a little bit of everything</option>
+                            <option value="budget">🎒 Budget-friendly</option>
+                            <option value="adventure">🏔️ Adventure and activities</option>
+                            <option value="relaxation">🌴 Relaxation and beaches</option>
+                            <option value="culture">🏛️ Culture, history and sightseeing</option>
+                            <option value="luxury">💎 Luxury and comfort</option>
+                            <option value="food">🍜 Food and local experiences</option>
+                        </select>
+                    </div>
 
-    <section class="closing-banner">
-      <div><span class="section-kicker light-eyebrow">THE WORLD IS WAITING</span><h2>Somewhere out there<br>is your <em>next story.</em></h2></div>
-      <a href="#planner" class="button button-light">Let's plan it ↗</a>
-      <span class="closing-spark">✳</span>
-    </section>
-  </main>
+                    <div class="form-group">
+                        <label for="transport">Preferred transportation</label>
+                        <select id="transport" name="transport">
+                            <option value="any">Compare available options</option>
+                            <option value="flight">✈️ Flight</option>
+                            <option value="train">🚆 Train</option>
+                            <option value="bus">🚌 Bus</option>
+                            <option value="car">🚗 Car / road trip</option>
+                        </select>
+                    </div>
 
-  <footer class="footer">
-    <a href="#home" class="brand footer-brand"><span class="brand-icon">✈</span><span>wayfarer<span class="brand-dot">.</span><small>YOUR NEXT CHAPTER</small></span></a>
-    <p>Made for the journey, not just the destination.</p>
-    <a href="#home">Back to top ↑</a>
-    <small class="footer-disclaimer">A student project. Costs are estimates; verify all prices and travel details independently.</small>
-  </footer>
+                    <div class="form-group">
+                        <label for="notes">Anything else? <span>(optional)</span></label>
+                        <textarea
+                            id="notes"
+                            name="notes"
+                            rows="3"
+                            placeholder="e.g. Prefer scenic places, vegetarian food, or family-friendly hotels..."
+                        ></textarea>
+                    </div>
+
+                    <p id="error" class="error-message" role="alert"></p>
+
+                    <button type="submit" class="submit-button" id="plan-button">
+                        Create my trip plan <span>→</span>
+                    </button>
+
+                    <p class="form-note">✦ Personalized planning, built around your preferences.</p>
+                </form>
+
+                <aside class="feature-list">
+                    <div class="feature feature-highlight">
+                        <span class="feature-icon">💰</span>
+                        <h3>Budget breakdown</h3>
+                        <p>See estimated spending for transport, accommodation, food and activities.</p>
+                    </div>
+
+                    <div class="feature">
+                        <span class="feature-icon">🗺️</span>
+                        <h3>Day-by-day itinerary</h3>
+                        <p>Organize sightseeing, activities and experiences for each day.</p>
+                    </div>
+
+                    <div class="feature">
+                        <span class="feature-icon">🏨</span>
+                        <h3>Stay and travel options</h3>
+                        <p>Explore relevant flight, train, hotel and destination search links.</p>
+                    </div>
+
+                    <div class="feature">
+                        <span class="feature-icon">🎯</span>
+                        <h3>Your kind of trip</h3>
+                        <p>Adjust your plans to your budget, group size and travel interests.</p>
+                    </div>
+
+                    <div class="tip-card">
+                        <span>💡 A little tip</span>
+                        <p>Include travel dates and your total group budget for a more useful estimate.</p>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section class="results-section" id="results">
+            <div class="section-heading">
+                <span class="eyebrow">✦ YOUR ADVENTURE AWAITS</span>
+                <h2>Your trip, at a glance</h2>
+                <p>Your plan and estimated costs will appear here after you submit the form.</p>
+            </div>
+
+            <div class="results-card" id="results-card">
+                <div class="results-empty" id="empty-state">
+                    <span class="empty-icon">🧳</span>
+                    <h3>Your next adventure is waiting</h3>
+                    <p>Fill in your travel details above to start building your itinerary.</p>
+                    <a href="#planner" class="secondary-button">Start planning ↑</a>
+                </div>
+
+                <div id="results-content" hidden>
+                    <div class="results-header">
+                        <div>
+                            <span class="eyebrow">YOUR PERSONALIZED PLAN</span>
+                            <h3 id="tripTitle">Your trip</h3>
+                            <p id="tripSubtitle"></p>
+                        </div>
+                        <span class="trip-badge">✦ Your adventure</span>
+                    </div>
+
+                    <div class="budget-summary">
+                        <div class="budget-main">
+                            <span>Estimated total cost</span>
+                            <strong id="totalCost">₹0</strong>
+                            <p id="budgetMessage"></p>
+                        </div>
+
+                        <div class="budget-stats">
+                            <div>
+                                <span>Your budget</span>
+                                <strong id="budgetValue">₹0</strong>
+                            </div>
+                            <div>
+                                <span>Budget remaining</span>
+                                <strong id="remainingCost">₹0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 class="subheading">Estimated cost breakdown</h4>
+                    <div id="costList" class="cost-list"></div>
+
+                    <div class="bottom-total">
+                        <span>Estimated trip cost</span>
+                        <strong id="bottomTotal">₹0</strong>
+                    </div>
+
+                    <div class="results-actions">
+                        <button type="button" id="editButton" class="secondary-button">
+                            Edit trip
+                        </button>
+                        <button type="button" id="printButton" class="secondary-button">
+                            Print plan
+                        </button>
+                    </div>
+
+                    <div class="search-links" id="searchLinks"></div>
+
+                    <div class="itinerary-output" id="itinerary-output">
+                        <h4 class="subheading">Your day-by-day itinerary</h4>
+                        <div id="itinerary"></div>
+                    </div>
+
+                    <div class="estimate-fields" id="estimateFields">
+                        <p>
+                            <strong>Important:</strong> Costs are estimates, not live quotes.
+                            Check the linked travel and accommodation providers for current
+                            prices, availability, taxes and booking conditions before paying.
+                        </p>
+                    </div>
+
+                    <button type="button" id="updateButton" class="submit-button">
+                        Update my plan ↻
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a href="./index.html" class="brand">
+            <span class="brand-icon">✈</span>
+            TripPlanner<span class="brand-dot">.</span>
+        </a>
+        <p>Made for curious minds and unforgettable journeys. ✦</p>
+        <span>© 2026 TripPlanner</span>
+    </footer>
 </body>
 </html>
