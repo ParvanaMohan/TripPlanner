@@ -432,17 +432,32 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   form.addEventListener("submit", function (event) {
-    event.preventDefault();
-    clearError();
+  event.preventDefault();
 
-    try {
-      trip = readTrip();
-      trip.startDateString = startDateInput.value;
-      trip.endDateString = endDateInput.value;
-      costs = estimateCosts(trip);
+  try {
+    trip = readTrip();
+    trip.startDateString = startDateInput.value;
+    trip.endDateString = endDateInput.value;
+    costs = estimateCosts(trip);
 
-      updateCostInputs();
-      renderTrip();
+    updateCostInputs();
+    renderTrip();
+
+    resultsSection.hidden = false;
+    emptyState.hidden = true;
+    resultsContent.hidden = false;
+
+    resultsSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  } catch (exception) {
+    showError(
+      exception.message ||
+      "Please check your trip details and try again."
+    );
+  }
+});
     } catch (exception) {
       showError(exception.message || "Something went wrong. Please check your trip details.");
     }
