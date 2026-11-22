@@ -10,22 +10,6 @@ It is a student project built with basic web technologies. No backend, database 
 
 ---
 
-## Screenshots
-
-| Home Page | Trip Form |
-|:---:|:---:|
-| <img src="Screenshots/Homepage.png" width="400"> | <img src="Screenshots/tripform.png" width="400"> |
-
-| Creating the Plan | Trip Plan Overview |
-|:---:|:---:|
-| <img src="Screenshots/create.png" width="400"> | <img src="Screenshots/plan.png" width="400"> |
-
-| Cost Breakdown | Day-by-Day Itinerary |
-|:---:|:---:|
-| <img src="Screenshots/cost.png" width="400"> | <img src="Screenshots/day%20by%20day.png" width="400"> |
-
----
-
 ## Main Features
 
 ### 1. Trip Details Form
