@@ -155,4 +155,4 @@ TripPlanner is a student project made for learning purposes. It does not make bo
 
 ## Author
 
-Made by [ParvanaMohan](https://github.com/ParvanaMohan)
+Made by [Parvana Mohan](https://github.com/ParvanaMohan)
