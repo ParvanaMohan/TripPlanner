@@ -1,239 +1,562 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Create a personalised travel itinerary and estimate your trip budget.">
-  <title>TripPlanner | Your Next Adventure</title>
-  <link rel="stylesheet" href="./style.css">
-  <script src="./script.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Create a personalised travel itinerary and estimate your trip budget.">
+<title>TripPlanner | Your Next Adventure</title>
+<style>
+:root{--blue:#2864e8;--blue-dark:#1749bd;--ink:#172b36;--muted:#71818a;--paper:#f6f8fc;--border:#e5eaf1;--shadow:0 18px 50px rgba(28,52,90,.09)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;color:var(--ink);background:var(--paper);font-family:Inter,"Segoe UI",Arial,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.page-width{width:min(1160px,calc(100% - 44px));margin-inline:auto}
+.topbar{min-height:78px;padding:0 max(22px,calc((100% - 1160px)/2));display:flex;align-items:center;justify-content:space-between;gap:24px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
+.brand{display:inline-flex;align-items:center;gap:7px;font-size:22px;font-weight:850;letter-spacing:-.9px;white-space:nowrap}
+.brand>span{color:var(--blue)}
+.nav-links{display:flex;gap:30px;font-size:14px;color:#52616f;font-weight:600}
+.nav-links a:hover{color:var(--blue)}
+.nav-button,.primary-link{display:inline-flex;justify-content:center;align-items:center;gap:13px;border-radius:12px;padding:12px 19px;background:var(--blue);color:#fff;font-size:14px;font-weight:750;border:0;transition:transform .2s,background .2s}
+.nav-button:hover,.primary-link:hover,.submit-button:hover{background:var(--blue-dark);transform:translateY(-2px)}
+.hero{min-height:530px;display:grid;grid-template-columns:1fr .92fr;align-items:center;gap:58px;padding-block:68px 78px}
+.hero-content{max-width:570px}
+.eyebrow,.step-label{color:var(--blue);font-size:11px;font-weight:850;letter-spacing:1.7px}
+.hero h1{margin:18px 0;font-size:clamp(44px,5.3vw,70px);line-height:1.08;letter-spacing:-3.5px}
+.hero h1 span{color:var(--blue)}
+.hero-content>p:not(.hero-note){max-width:500px;color:var(--muted);font-size:16px;line-height:1.9;margin-bottom:27px}
+.hero-note{color:var(--muted);font-size:12px;margin-top:24px}
+.hero-visual{position:relative;min-width:0}
+.hero-image{min-height:390px;border-radius:30px;background:linear-gradient(180deg,transparent 60%,rgba(12,39,57,.17)),url("https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=1200&q=85") center/cover #9ec5e8;box-shadow:var(--shadow)}
+.floating-card{position:absolute;left:-28px;bottom:30px;display:flex;align-items:center;gap:13px;padding:16px 19px;background:#fff;border-radius:17px;box-shadow:var(--shadow)}
+.floating-card>span{display:grid;place-items:center;width:43px;height:43px;border-radius:13px;background:#fff5d8;font-size:23px}
+.floating-card strong{font-size:13px}
+.floating-card p{margin:3px 0 0;font-size:12px;color:var(--muted)}
+.floating-sticker{position:absolute;right:-13px;top:27px;background:#fff;border-radius:13px;padding:12px 17px;box-shadow:var(--shadow);font-weight:800;font-size:13px;transform:rotate(4deg)}
+.planner-section,.results-section{padding-top:72px;padding-bottom:65px}
+.results-section{padding-top:30px}
+.section-heading{text-align:center;max-width:650px;margin:0 auto 35px}
+.section-heading h2{margin:9px 0;font-size:clamp(30px,4vw,42px);letter-spacing:-1.5px;line-height:1.2}
+.section-heading p{color:var(--muted);margin:10px 0 0}
+.planner-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(270px,.8fr);gap:25px;align-items:start}
+.planner-card,.feature-panel,.tip-card,.results-card{background:#fff;border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow)}
+.planner-card,.results-card{padding:30px}
+.card-heading,.results-header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:27px}
+.card-heading h3,.results-header h3{font-size:25px;letter-spacing:-.8px;margin:4px 0 0}
+.heading-emoji{font-size:30px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-group{min-width:0;margin-bottom:20px}
+.form-group label{display:block;margin-bottom:8px;font-size:13px;font-weight:750}
+.optional{font-weight:400;color:var(--muted)}
+input,select,textarea{width:100%;min-width:0;padding:12px 13px;color:var(--ink);background:#fbfcfe;border:1px solid #dfe5ed;border-radius:10px;outline:none;transition:border .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,100,232,.1)}
+input,select{min-height:46px}
+textarea{resize:vertical}
+.field-hint{font-size:12px;color:var(--muted);margin:-4px 0 12px}
+.interest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.form-group .interest-option{cursor:pointer;position:relative;margin:0}
+.interest-option input{position:absolute;opacity:0;pointer-events:none}
+.interest-option span{min-height:43px;padding:10px 7px;display:flex;justify-content:center;align-items:center;background:#f7f9fc;border:1px solid var(--border);border-radius:10px;font-size:12px;font-weight:650;text-align:center;transition:.2s}
+.interest-option input:checked+span{border-color:var(--blue);background:#edf3ff;color:var(--blue-dark)}
+.interest-option input:focus-visible+span{outline:2px solid var(--blue)}
+.submit-button{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;min-height:53px;padding:13px 18px;color:#fff;background:var(--blue);border:0;border-radius:12px;font-weight:800;transition:.2s}
+.form-disclaimer,.small-note{color:var(--muted);font-size:11px;line-height:1.7}
+.form-disclaimer{text-align:center;margin-bottom:0}
+.error-message{color:#b42318;font-size:13px;font-weight:650}
+.feature-column{display:grid;gap:20px}
+.feature-panel{padding:27px 24px}
+.feature-icon{font-size:32px}
+.feature-panel h3{font-size:22px;margin:12px 0 5px}
+.feature-panel>p,.feature-item p{color:var(--muted);font-size:13px;line-height:1.7;margin:5px 0 0}
+.feature-divider{height:1px;background:var(--border);margin:22px 0}
+.feature-item{display:flex;align-items:flex-start;gap:12px;margin-top:20px}
+.feature-item>span{display:grid;place-items:center;flex:0 0 41px;height:41px;border-radius:12px;background:#eef3ff;font-size:20px}
+.feature-item strong{font-size:13px}
+.tip-card{padding:23px;background:#eef3ff;border-color:#e0e9ff}
+.tip-card>span{color:var(--blue);font-size:10px;font-weight:850;letter-spacing:1.2px}
+.tip-card>p{margin:12px 0;font-size:21px;font-weight:800;line-height:1.4}
+.tip-card small{color:var(--muted)}
+.results-empty{padding:48px 15px;text-align:center}
+.empty-illustration{font-size:53px}
+.results-empty h3{font-size:23px;margin-bottom:8px}
+.results-empty p{max-width:500px;margin:0 auto 20px;color:var(--muted);font-size:14px}
+.empty-link{color:var(--blue);font-weight:800}
+.results-header{align-items:flex-start;margin-bottom:24px}
+.results-header h3{font-size:28px}
+.results-header p{margin:5px 0;color:var(--muted);font-size:13px}
+.outline-button{background:#fff;color:var(--blue);border:1px solid #cbd8f4;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:750}
+.outline-button:hover{background:#eef3ff}
+.budget-summary{padding:26px;background:linear-gradient(125deg,#edf3ff,#f7faff);border:1px solid #dce7ff;border-radius:17px}
+.summary-label{font-size:10px;letter-spacing:1.4px;font-weight:850;color:#4b65a3}
+.budget-main>strong{display:block;font-size:clamp(32px,5vw,46px);line-height:1.3;letter-spacing:-1.5px;margin-top:4px}
+.budget-main>p{font-size:13px;margin:5px 0 22px;color:#52658c}
+.budget-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.budget-stats>div{padding:14px;border-radius:12px;background:rgba(255,255,255,.8)}
+.budget-stats span{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
+.budget-stats strong{font-size:15px;overflow-wrap:anywhere}
+.budget-track{height:9px;margin-top:21px;overflow:hidden;border-radius:20px;background:#dce5f7}
+.budget-track-bar{height:100%;width:0;border-radius:inherit;background:var(--blue);transition:width .3s}
+.budget-track-bar.over-budget{background:#e04f55}
+.budget-track-note{color:var(--muted);font-size:11px;margin:8px 0 0}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px}
+.result-section{padding:22px;border:1px solid var(--border);border-radius:15px}
+.result-heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+.result-icon{display:grid;place-items:center;flex:0 0 40px;height:40px;border-radius:12px;background:#f0f4ff;font-size:20px}
+.result-heading h4{margin:2px 0 3px;font-size:16px}
+.result-heading p{margin:0;color:var(--muted);font-size:12px}
+.cost-input-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:650}
+.rupee-input{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.rupee-input input{width:112px;min-height:37px;padding:7px 8px;text-align:right;font-size:13px}
+.update-button{width:100%;margin:17px 0 10px;padding:11px;border:0;border-radius:10px;background:#eaf1ff;color:var(--blue-dark);font-weight:800}
+.update-button:hover{background:#dce7ff}
+.search-links{display:grid;gap:10px}
+.search-link{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px;border:1px solid var(--border);border-radius:11px;font-size:13px;font-weight:750;transition:.2s}
+.search-link:hover{background:#f4f7ff;border-color:#b8cbfa;color:var(--blue)}
+.search-link small{display:block;font-weight:400;color:var(--muted)}
+.itinerary-section{margin-top:28px;padding:23px;border:1px solid var(--border);border-radius:15px}
+.itinerary-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.day-card{padding:17px;background:#fafbfe;border:1px solid var(--border);border-radius:13px}
+.day-card h4{margin:0 0 4px;font-size:14px}
+.day-date{color:var(--blue);font-size:11px;font-weight:800}
+.day-card p{margin:8px 0;color:#53616f;font-size:12px;line-height:1.7}
+.day-card ul{padding-left:19px;margin:8px 0 0;font-size:12px}
+.day-card li{margin:5px 0}
+.travel-tip{padding:18px;margin-top:20px;border-radius:12px;background:#f0faf5;color:#246448;font-size:13px}
+.results-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px;margin-top:24px}
+.footer{padding:35px 22px;border-top:1px solid var(--border);text-align:center;background:#fff}
+.footer-brand{justify-content:center}
+.footer p,.footer>span{color:var(--muted);font-size:12px}
+.footer p{margin:8px 0 3px}
+@media(max-width:850px){
+.hero{grid-template-columns:1fr 1fr;gap:28px}
+.hero-image{min-height:330px}
+.planner-layout{grid-template-columns:1fr}
+.feature-column{grid-template-columns:1fr 1fr}
+.budget-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+.page-width{width:min(100% - 28px,520px)}
+.topbar{min-height:68px;padding:0 15px;gap:10px}
+.brand{font-size:18px}
+.nav-links{gap:12px;font-size:11px}
+.nav-button{display:none}
+.hero{grid-template-columns:1fr;padding-block:46px 52px;gap:30px}
+.hero h1{font-size:49px;letter-spacing:-2.5px}
+.hero-image{min-height:280px}
+.floating-card{left:10px;bottom:15px}
+.floating-sticker{right:5px}
+.planner-section,.results-section{padding-top:45px;padding-bottom:42px}
+.planner-card,.results-card{padding:19px;border-radius:17px}
+.form-row{grid-template-columns:1fr;gap:0}
+.interest-grid{grid-template-columns:repeat(2,1fr)}
+.feature-column,.results-grid,.itinerary-list{grid-template-columns:1fr}
+.results-header{flex-direction:column}
+.budget-summary{padding:18px}
+.result-section,.itinerary-section{padding:16px}
+.rupee-input input{width:95px}
+.results-actions>*{width:100%;text-align:center}}
+@media print{
+body{background:#fff}
+.topbar,.hero,.planner-section,.section-heading,.results-actions,.update-button,.editable-costs input,.small-note,.footer,#resetButton{display:none!important}
+.results-card{border:0;box-shadow:none;padding:0}
+.budget-summary,.day-card,.result-section{break-inside:avoid}}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="TripPlanner home">✈ Trip<span>Planner</span></a>
-    <nav class="nav-links">
-      <a href="#planner">Plan a trip</a>
-      <a href="#results">Your itinerary</a>
-    </nav>
-    <a class="nav-button" href="#planner">Start planning ↗</a>
-  </header>
+<header class="topbar">
+  <a class="brand" href="#" aria-label="TripPlanner home">✈ Trip<span>Planner</span></a>
+  <nav class="nav-links"><a href="#planner">Plan a trip</a><a href="#results">Your itinerary</a></nav>
+  <a class="nav-button" href="#planner">Start planning ↗</a>
+</header>
 
-  <main>
-    <section class="hero page-width">
-      <div class="hero-content">
-        <span class="eyebrow">✦ YOUR NEXT ADVENTURE STARTS HERE</span>
-        <h1>Less planning.<br>More <span>exploring.</span></h1>
-        <p>Your dream trip, planned around your budget, interests and travel style. Build an itinerary, estimate your costs and discover places to explore.</p>
-        <a class="primary-link" href="#planner">Plan my trip <span>→</span></a>
-        <p class="hero-note">✦ Personalised plans · Budget estimates · Travel inspiration</p>
+<main>
+<section class="hero page-width">
+  <div class="hero-content">
+    <span class="eyebrow">✦ YOUR NEXT ADVENTURE STARTS HERE</span>
+    <h1>Less planning.<br>More <span>exploring.</span></h1>
+    <p>Your dream trip, planned around your budget, interests and travel style. Build an itinerary, estimate your costs and discover places to explore.</p>
+    <a class="primary-link" href="#planner">Plan my trip <span>→</span></a>
+    <p class="hero-note">✦ Personalised plans · Budget estimates · Travel inspiration</p>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-image" role="img" aria-label="Beautiful tropical travel destination"></div>
+    <div class="floating-card"><span>☀️</span><div><strong>Your next chapter</strong><p>New places. New memories.</p></div></div>
+    <div class="floating-sticker">✈ Let's go!</div>
+  </div>
+</section>
+
+<section class="planner-section page-width" id="planner">
+  <div class="section-heading">
+    <span class="eyebrow">MAKE IT YOURS</span>
+    <h2>Where are we going?</h2>
+    <p>Tell us about your trip and we'll help turn your ideas into a plan.</p>
+  </div>
+  <div class="planner-layout">
+    <form class="planner-card" id="tripForm" action="javascript:void(0)" novalidate>
+      <div class="card-heading">
+        <div><span class="step-label">YOUR TRIP DETAILS</span><h3>Build your getaway</h3></div>
+        <span class="heading-emoji">🧳</span>
       </div>
-      <div class="hero-visual">
-        <div class="hero-image" role="img" aria-label="Beautiful tropical travel destination"></div>
-        <div class="floating-card">
-          <span>☀️</span>
-          <div><strong>Your next chapter</strong><p>New places. New memories.</p></div>
-        </div>
-        <div class="floating-sticker">✈ Let's go!</div>
+      <div class="form-row">
+        <div class="form-group"><label for="origin">Leaving from</label><input id="origin" type="text" placeholder="e.g. Kochi"></div>
+        <div class="form-group"><label for="destination">Going to</label><input id="destination" type="text" placeholder="e.g. Goa"></div>
       </div>
-    </section>
-
-    <section class="planner-section page-width" id="planner">
-      <div class="section-heading">
-        <span class="eyebrow">MAKE IT YOURS</span>
-        <h2>Where are we going?</h2>
-        <p>Tell us about your trip and we'll help turn your ideas into a plan.</p>
+      <div class="form-row">
+        <div class="form-group"><label for="startDate">Departure date</label><input id="startDate" type="date"></div>
+        <div class="form-group"><label for="endDate">Return date</label><input id="endDate" type="date"></div>
       </div>
-
-      <div class="planner-layout">
-        <form class="planner-card" id="tripForm">
-          <div class="card-heading">
-            <div><span class="step-label">YOUR TRIP DETAILS</span><h3>Build your getaway</h3></div>
-            <span class="heading-emoji">🧳</span>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="origin">Leaving from</label>
-              <input id="origin" name="origin" type="text" placeholder="e.g. Kochi" required>
-            </div>
-            <div class="form-group">
-              <label for="destination">Going to</label>
-              <input id="destination" name="destination" type="text" placeholder="e.g. Goa" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="startDate">Departure date</label>
-              <input id="startDate" name="startDate" type="date" required>
-            </div>
-            <div class="form-group">
-              <label for="endDate">Return date</label>
-              <input id="endDate" name="endDate" type="date" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="travellers">Number of travellers</label>
-              <select id="travellers" name="travellers">
-                <option value="1">1 traveller</option>
-                <option value="2" selected>2 travellers</option>
-                <option value="3">3 travellers</option>
-                <option value="4">4 travellers</option>
-                <option value="5">5 travellers</option>
-                <option value="6">6 travellers</option>
-                <option value="7">7 travellers</option>
-                <option value="8">8 travellers</option>
-                <option value="9">9 travellers</option>
-                <option value="10">10 travellers</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="budget">Total budget (₹)</label>
-              <input id="budget" name="budget" type="number" min="1000" step="500" placeholder="e.g. 50000" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label for="style">Travel style</label>
-              <select id="style" name="style">
-                <option value="budget">Budget-friendly</option>
-                <option value="balanced" selected>Balanced comfort</option>
-                <option value="comfort">Comfort & luxury</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="transport">Preferred transport</label>
-              <select id="transport" name="transport">
-                <option value="flight">Flight</option>
-                <option value="train" selected>Train</option>
-                <option value="bus">Bus</option>
-                <option value="car">Car / road trip</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group interests-group">
-            <label>What would you love to experience?</label>
-            <p class="field-hint">Choose as many as you like.</p>
-            <div class="interest-grid">
-              <label class="interest-option"><input type="checkbox" name="interest" value="culture"><span>🏛️ Culture</span></label>
-              <label class="interest-option"><input type="checkbox" name="interest" value="nature"><span>🌿 Nature</span></label>
-              <label class="interest-option"><input type="checkbox" name="interest" value="food"><span>🍜 Food</span></label>
-              <label class="interest-option"><input type="checkbox" name="interest" value="adventure"><span>🏔️ Adventure</span></label>
-              <label class="interest-option"><input type="checkbox" name="interest" value="shopping"><span>🛍️ Shopping</span></label>
-              <label class="interest-option"><input type="checkbox" name="interest" value="relax"><span>🌊 Relaxation</span></label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="notes">Anything else we should know? <span class="optional">(optional)</span></label>
-            <textarea id="notes" name="notes" rows="3" placeholder="e.g. Scenic places, local food or less crowded destinations..."></textarea>
-          </div>
-
-          <p class="error-message" id="error" role="alert" aria-live="polite"></p>
-          <button class="submit-button" id="plan-button" type="submit">✨ Create my travel plan <span>→</span></button>
-          <p class="form-disclaimer">Cost estimates are illustrative, not live booking prices.</p>
-        </form>
-
-        <aside class="feature-column">
-          <div class="feature-panel">
-            <span class="feature-icon">🗺️</span>
-            <h3>Your trip, your way</h3>
-            <p>Get a suggested itinerary based on your destination, dates and interests.</p>
-            <div class="feature-divider"></div>
-            <div class="feature-item"><span>💰</span><div><strong>Budget breakdown</strong><p>Estimate transport, accommodation, food and activities.</p></div></div>
-            <div class="feature-item"><span>📅</span><div><strong>Day-by-day plan</strong><p>Discover suggested activities for every day.</p></div></div>
-            <div class="feature-item"><span>🔎</span><div><strong>Explore real options</strong><p>Open search links to compare travel options.</p></div></div>
-          </div>
-          <div class="tip-card">
-            <span>✦ A LITTLE TRAVEL WISDOM</span>
-            <p>“Collect moments, not just miles.”</p>
-            <small>Your next favourite memory is waiting.</small>
-          </div>
-        </aside>
+      <div class="form-row">
+        <div class="form-group"><label for="travellers">Number of travellers</label>
+          <select id="travellers">
+            <option value="1">1 traveller</option><option value="2" selected>2 travellers</option><option value="3">3 travellers</option><option value="4">4 travellers</option><option value="5">5 travellers</option><option value="6">6 travellers</option><option value="7">7 travellers</option><option value="8">8 travellers</option><option value="9">9 travellers</option><option value="10">10 travellers</option>
+          </select></div>
+        <div class="form-group"><label for="budget">Total budget (₹)</label><input id="budget" type="number" min="1000" step="500" placeholder="e.g. 50000"></div>
       </div>
-    </section>
-
-    <section class="results-section page-width" id="results">
-      <div class="section-heading">
-        <span class="eyebrow">YOUR ADVENTURE, UNFOLDED</span>
-        <h2>Your travel plan</h2>
-        <p>Your itinerary and estimated trip budget will appear here.</p>
+      <div class="form-row">
+        <div class="form-group"><label for="style">Travel style</label>
+          <select id="style"><option value="budget">Budget-friendly</option><option value="balanced" selected>Balanced comfort</option><option value="comfort">Comfort &amp; luxury</option></select></div>
+        <div class="form-group"><label for="transport">Preferred transport</label>
+          <select id="transport"><option value="flight">Flight</option><option value="train" selected>Train</option><option value="bus">Bus</option><option value="car">Car / road trip</option></select></div>
       </div>
-
-      <div class="results-card">
-        <div class="results-empty" id="emptyState">
-          <div class="empty-illustration">🌍</div>
-          <h3>Your next adventure starts with a plan.</h3>
-          <p>Fill in your trip details above, then select <strong>Create my travel plan</strong>.</p>
-          <a href="#planner" class="empty-link">Let's plan it ↑</a>
-        </div>
-
-        <div id="resultsContent" hidden>
-          <div class="results-header">
-            <div><span class="step-label">YOUR PERSONAL TRIP PLAN</span><h3 id="tripTitle">Your trip</h3><p id="tripSubtitle"></p></div>
-            <button type="button" class="outline-button" id="resetButton">Plan another trip ↗</button>
-          </div>
-
-          <div class="budget-summary">
-            <div class="budget-main">
-              <span class="summary-label">ESTIMATED TOTAL COST</span>
-              <strong id="totalCost">₹0</strong>
-              <p id="budgetMessage"></p>
-            </div>
-            <div class="budget-stats">
-              <div><span>Your budget</span><strong id="budgetValue">₹0</strong></div>
-              <div><span>Budget remaining</span><strong id="remainingCost">₹0</strong></div>
-              <div><span>Trip duration</span><strong id="tripDays">0 days</strong></div>
-              <div><span>Travellers</span><strong id="travellerCount">0</strong></div>
-            </div>
-            <div class="budget-track"><div class="budget-track-bar" id="budgetBar"></div></div>
-            <p id="budgetTrackNote" class="budget-track-note"></p>
-          </div>
-
-          <div class="results-grid">
-            <section class="result-section">
-              <div class="result-heading"><span class="result-icon">💸</span><div><h4>Estimated cost breakdown</h4><p>Change the estimates to match your research.</p></div></div>
-              <div class="editable-costs">
-                <label class="cost-input-row"><span>✈️ Transport</span><span class="rupee-input">₹ <input type="number" id="editTransport" min="0" step="500" aria-label="Transport cost"></span></label>
-                <label class="cost-input-row"><span>🏨 Accommodation</span><span class="rupee-input">₹ <input type="number" id="editStay" min="0" step="500" aria-label="Accommodation cost"></span></label>
-                <label class="cost-input-row"><span>🍽️ Food</span><span class="rupee-input">₹ <input type="number" id="editFood" min="0" step="500" aria-label="Food cost"></span></label>
-                <label class="cost-input-row"><span>🚕 Local transport</span><span class="rupee-input">₹ <input type="number" id="editLocal" min="0" step="500" aria-label="Local transport cost"></span></label>
-                <label class="cost-input-row"><span>🎟️ Activities & extras</span><span class="rupee-input">₹ <input type="number" id="editActivities" min="0" step="500" aria-label="Activities cost"></span></label>
-              </div>
-              <button type="button" class="update-button" id="updateButton">Update my budget</button>
-              <p class="small-note">A 10% contingency allowance is included. Prices are estimates, not live quotes.</p>
-            </section>
-
-            <section class="result-section">
-              <div class="result-heading"><span class="result-icon">🔗</span><div><h4>Explore booking options</h4><p>Compare prices and availability on external websites.</p></div></div>
-              <div class="search-links" id="searchLinks"></div>
-              <p class="small-note">These links open external search pages. TripPlanner does not make bookings or fetch live prices.</p>
-            </section>
-          </div>
-
-          <section class="itinerary-section">
-            <div class="result-heading"><span class="result-icon">🗓️</span><div><h4>Your day-by-day itinerary</h4><p>Suggested activities based on your interests.</p></div></div>
-            <div class="itinerary-list" id="itinerary"></div>
-          </section>
-
-          <div class="travel-tip" id="travelTip"></div>
-          <div class="results-actions">
-            <button type="button" class="outline-button" id="printButton">Print / Save as PDF ⤓</button>
-            <a href="#planner" class="primary-link">Edit trip details ↑</a>
-          </div>
+      <div class="form-group">
+        <label>What would you love to experience?</label>
+        <p class="field-hint">Choose as many as you like.</p>
+        <div class="interest-grid">
+          <label class="interest-option"><input type="checkbox" name="interest" value="culture"><span>🏛️ Culture</span></label>
+          <label class="interest-option"><input type="checkbox" name="interest" value="nature"><span>🌿 Nature</span></label>
+          <label class="interest-option"><input type="checkbox" name="interest" value="food"><span>🍜 Food</span></label>
+          <label class="interest-option"><input type="checkbox" name="interest" value="adventure"><span>🏔️ Adventure</span></label>
+          <label class="interest-option"><input type="checkbox" name="interest" value="shopping"><span>🛍️ Shopping</span></label>
+          <label class="interest-option"><input type="checkbox" name="interest" value="relax"><span>🌊 Relaxation</span></label>
         </div>
       </div>
-    </section>
-  </main>
+      <div class="form-group">
+        <label for="notes">Anything else we should know? <span class="optional">(optional)</span></label>
+        <textarea id="notes" rows="3" placeholder="e.g. Scenic places, local food or less crowded destinations..."></textarea>
+      </div>
+      <p class="error-message" id="error" role="alert" aria-live="polite"></p>
+      <button class="submit-button" id="plan-button" type="submit">✨ Create my travel plan <span>→</span></button>
+      <p class="form-disclaimer">Cost estimates are illustrative, not live booking prices.</p>
+    </form>
 
-  <footer class="footer">
-    <a class="brand footer-brand" href="#">✈ Trip<span>Planner</span></a>
-    <p>Made for curious minds and unforgettable journeys.</p>
-    <span>Plan thoughtfully. Travel freely. ✦</span>
-  </footer>
+    <aside class="feature-column">
+      <div class="feature-panel">
+        <span class="feature-icon">🗺️</span>
+        <h3>Your trip, your way</h3>
+        <p>Get a suggested itinerary based on your destination, dates and interests.</p>
+        <div class="feature-divider"></div>
+        <div class="feature-item"><span>💰</span><div><strong>Budget breakdown</strong><p>Estimate transport, accommodation, food and activities.</p></div></div>
+        <div class="feature-item"><span>📅</span><div><strong>Day-by-day plan</strong><p>Discover suggested activities for every day.</p></div></div>
+        <div class="feature-item"><span>🔎</span><div><strong>Explore real options</strong><p>Open search links to compare travel options.</p></div></div>
+      </div>
+      <div class="tip-card"><span>✦ A LITTLE TRAVEL WISDOM</span><p>“Collect moments, not just miles.”</p><small>Your next favourite memory is waiting.</small></div>
+    </aside>
+  </div>
+</section>
+
+<section class="results-section page-width" id="results">
+  <div class="section-heading">
+    <span class="eyebrow">YOUR ADVENTURE, UNFOLDED</span>
+    <h2>Your travel plan</h2>
+    <p>Your itinerary and estimated trip budget will appear here.</p>
+  </div>
+  <div class="results-card">
+    <div class="results-empty" id="emptyState">
+      <div class="empty-illustration">🌍</div>
+      <h3>Your next adventure starts with a plan.</h3>
+      <p>Fill in your trip details above, then select <strong>Create my travel plan</strong>.</p>
+      <a href="#planner" class="empty-link">Let's plan it ↑</a>
+    </div>
+
+    <div id="resultsContent" hidden>
+      <div class="results-header">
+        <div><span class="step-label">YOUR PERSONAL TRIP PLAN</span><h3 id="tripTitle">Your trip</h3><p id="tripSubtitle"></p></div>
+        <button type="button" class="outline-button" id="resetButton">Plan another trip ↗</button>
+      </div>
+      <div class="budget-summary">
+        <div class="budget-main"><span class="summary-label">ESTIMATED TOTAL COST</span><strong id="totalCost">₹0</strong><p id="budgetMessage"></p></div>
+        <div class="budget-stats">
+          <div><span>Your budget</span><strong id="budgetValue">₹0</strong></div>
+          <div><span>Budget remaining</span><strong id="remainingCost">₹0</strong></div>
+          <div><span>Trip duration</span><strong id="tripDays">0 days</strong></div>
+          <div><span>Travellers</span><strong id="travellerCount">0</strong></div>
+        </div>
+        <div class="budget-track"><div class="budget-track-bar" id="budgetBar"></div></div>
+        <p id="budgetTrackNote" class="budget-track-note"></p>
+      </div>
+      <div class="results-grid">
+        <section class="result-section">
+          <div class="result-heading"><span class="result-icon">💸</span><div><h4>Estimated cost breakdown</h4><p>Change the estimates to match your research.</p></div></div>
+          <div class="editable-costs">
+            <label class="cost-input-row"><span>✈️ Transport</span><span class="rupee-input">₹ <input type="number" id="editTransport" min="0" step="500" aria-label="Transport cost"></span></label>
+            <label class="cost-input-row"><span>🏨 Accommodation</span><span class="rupee-input">₹ <input type="number" id="editStay" min="0" step="500" aria-label="Accommodation cost"></span></label>
+            <label class="cost-input-row"><span>🍽️ Food</span><span class="rupee-input">₹ <input type="number" id="editFood" min="0" step="500" aria-label="Food cost"></span></label>
+            <label class="cost-input-row"><span>🚕 Local transport</span><span class="rupee-input">₹ <input type="number" id="editLocal" min="0" step="500" aria-label="Local transport cost"></span></label>
+            <label class="cost-input-row"><span>🎟️ Activities &amp; extras</span><span class="rupee-input">₹ <input type="number" id="editActivities" min="0" step="500" aria-label="Activities cost"></span></label>
+          </div>
+          <button type="button" class="update-button" id="updateButton">Update my budget</button>
+          <p class="small-note">A 10% contingency allowance is included. Prices are estimates, not live quotes.</p>
+        </section>
+        <section class="result-section">
+          <div class="result-heading"><span class="result-icon">🔗</span><div><h4>Explore booking options</h4><p>Compare prices and availability on external websites.</p></div></div>
+          <div class="search-links" id="searchLinks"></div>
+          <p class="small-note">These links open external search pages. TripPlanner does not make bookings or fetch live prices.</p>
+        </section>
+      </div>
+      <section class="itinerary-section">
+        <div class="result-heading"><span class="result-icon">🗓️</span><div><h4>Your day-by-day itinerary</h4><p>Suggested activities based on your interests.</p></div></div>
+        <div class="itinerary-list" id="itinerary"></div>
+      </section>
+      <div class="travel-tip" id="travelTip"></div>
+      <div class="results-actions">
+        <button type="button" class="outline-button" id="printButton">Print / Save as PDF ⤓</button>
+        <a href="#planner" class="primary-link">Edit trip details ↑</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <a class="brand footer-brand" href="#">✈ Trip<span>Planner</span></a>
+  <p>Made for curious minds and unforgettable journeys.</p>
+  <span>Plan thoughtfully. Travel freely. ✦</span>
+</footer>
+
+<script>
+"use strict";
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var form = $("tripForm"), errorBox = $("error"), startIn = $("startDate"), endIn = $("endDate");
+  var emptyState = $("emptyState"), content = $("resultsContent");
+
+  var money = function (n) {
+    return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(Math.round(n));
+  };
+  var dateText = function (d) {
+    return new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(d);
+  };
+  var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  var activitiesByInterest = {
+    culture: ["Explore local heritage sites and museums.", "Discover historic neighbourhoods and architecture.", "Experience local traditions and cultural landmarks."],
+    nature: ["Visit a scenic viewpoint, garden or nature trail.", "Explore a nearby beach, lake, hill or green space.", "Spend time outdoors and enjoy the local scenery."],
+    food: ["Try a popular local breakfast and regional specialities.", "Explore local markets and authentic street food.", "Enjoy a regional meal at a well-reviewed restaurant."],
+    adventure: ["Explore an outdoor activity available at your destination.", "Look for a guided nature walk or adventure experience.", "Try a suitable outdoor activity after checking safety and availability."],
+    shopping: ["Explore local markets and souvenir shops.", "Visit shopping streets and discover locally made products.", "Set aside time for souvenirs and a relaxed shopping trip."],
+    relax: ["Enjoy a slow morning and explore at a comfortable pace.", "Spend time at a peaceful scenic spot.", "Keep some free time for relaxation and spontaneous discoveries."]
+  };
+  var styleRates = {
+    budget: { stay: 1400, food: 550, local: 350, activities: 400 },
+    balanced: { stay: 2800, food: 1000, local: 700, activities: 800 },
+    comfort: { stay: 5500, food: 1800, local: 1400, activities: 1500 }
+  };
+  var transportRates = { train: 900, flight: 4500, bus: 650, car: 2200 };
+  var transportLabels = { train: "Train", flight: "Flight", bus: "Bus", car: "Car / road trip" };
+
+  var trip = null, costs = null;
+
+  function addDays(date, n) { var r = new Date(date); r.setDate(r.getDate() + n); return r; }
+
+  function readTrip() {
+    var origin = $("origin").value.trim();
+    var destination = $("destination").value.trim();
+    var budget = Number($("budget").value);
+    var travellers = Number($("travellers").value);
+
+    if (!origin || !destination) throw new Error("Please enter both your departure city and destination.");
+    if (origin.toLowerCase() === destination.toLowerCase()) throw new Error("Your departure city and destination cannot be the same.");
+    if (!startIn.value || !endIn.value) throw new Error("Please select both departure and return dates.");
+
+    var start = new Date(startIn.value + "T12:00:00");
+    var end = new Date(endIn.value + "T12:00:00");
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) throw new Error("Please select valid departure and return dates.");
+    if (start < today) throw new Error("Your departure date is in the past. Please select today or a future date.");
+    if (end <= start) throw new Error("Your return date must be after your departure date.");
+
+    var days = Math.round((end - start) / 86400000);
+    if (days > 60) throw new Error("Please choose a trip lasting 60 days or less.");
+    if (!isFinite(budget) || budget < 1000) throw new Error("Please enter a total budget of at least ₹1,000.");
+
+    var interests = Array.prototype.map.call(form.querySelectorAll('input[name="interest"]:checked'), function (i) { return i.value; });
+
+    return {
+      origin: origin, destination: destination, start: start, end: end, days: days,
+      budget: budget, travellers: travellers, style: $("style").value, transport: $("transport").value,
+      interests: interests, notes: $("notes").value.trim(),
+      startString: startIn.value, endString: endIn.value
+    };
+  }
+
+  function estimateCosts(t) {
+    var r = styleRates[t.style] || styleRates.balanced;
+    var transport = transportRates[t.transport] * t.travellers;
+    if (t.transport === "car") transport = transportRates.car * Math.max(1, Math.ceil(t.days / 2));
+    return {
+      transport: Math.round(transport),
+      stay: Math.round(r.stay * Math.ceil(t.days / 2) * Math.max(1, Math.ceil(t.travellers / 2))),
+      food: Math.round(r.food * t.days * t.travellers),
+      local: Math.round(r.local * t.days * t.travellers),
+      activities: Math.round(r.activities * t.days * t.travellers)
+    };
+  }
+
+  function total() {
+    return Math.round((costs.transport + costs.stay + costs.food + costs.local + costs.activities) * 1.1);
+  }
+
+  function fillCostInputs() {
+    $("editTransport").value = costs.transport;
+    $("editStay").value = costs.stay;
+    $("editFood").value = costs.food;
+    $("editLocal").value = costs.local;
+    $("editActivities").value = costs.activities;
+  }
+
+  function renderBudget() {
+    var est = total(), remaining = trip.budget - est;
+    var pct = Math.min(100, est / trip.budget * 100);
+    $("totalCost").textContent = money(est);
+    $("budgetValue").textContent = money(trip.budget);
+    $("remainingCost").textContent = (remaining < 0 ? "−" : "") + money(Math.abs(remaining));
+    $("remainingCost").style.color = remaining < 0 ? "#b42318" : "#16875b";
+    $("tripDays").textContent = trip.days + (trip.days === 1 ? " day" : " days");
+    $("travellerCount").textContent = trip.travellers + (trip.travellers === 1 ? " person" : " people");
+    var msg = $("budgetMessage");
+    if (remaining >= 0) { msg.textContent = "✓ Your estimate is within your budget."; msg.style.color = "#16875b"; }
+    else { msg.textContent = "⚠ Your estimate exceeds your budget. Try adjusting your costs."; msg.style.color = "#b42318"; }
+    $("budgetBar").style.width = pct + "%";
+    $("budgetBar").classList.toggle("over-budget", remaining < 0);
+    $("budgetTrackNote").textContent = Math.round(pct) + "% of your budget is estimated to be used, including the 10% contingency.";
+  }
+
+  function renderLinks() {
+    var o = encodeURIComponent(trip.origin), d = encodeURIComponent(trip.destination);
+    var g = "https://www.google.com/";
+    var transportUrl = trip.transport === "flight" ? g + "travel/flights?q=" + o + "%20to%20" + d
+      : trip.transport === "train" ? g + "search?q=train+from+" + o + "+to+" + d
+      : trip.transport === "bus" ? g + "search?q=bus+from+" + o + "+to+" + d
+      : g + "maps/dir/" + o + "/" + d;
+    var links = [
+      { t: "Compare transport", s: "Search " + transportLabels[trip.transport] + " options", u: transportUrl },
+      { t: "Find accommodation", s: "Compare hotels and stays", u: g + "search?q=hotels+in+" + d },
+      { t: "Discover attractions", s: "Find popular places to visit", u: g + "search?q=things+to+do+in+" + d },
+      { t: "Explore local food", s: "Find restaurants and local favourites", u: g + "search?q=local+food+in+" + d },
+      { t: "Open destination map", s: "Explore the destination on Google Maps", u: g + "maps/search/?api=1&query=" + d },
+      { t: "Search travel dates", s: trip.startString + " to " + trip.endString, u: g + "search?q=" + o + "+to+" + d + "+travel+" + trip.startString + "+to+" + trip.endString }
+    ];
+    var box = $("searchLinks");
+    box.innerHTML = "";
+    links.forEach(function (item) {
+      var a = document.createElement("a");
+      a.className = "search-link"; a.href = item.u; a.target = "_blank"; a.rel = "noopener noreferrer";
+      var text = document.createElement("span"); text.textContent = item.t;
+      var small = document.createElement("small"); small.textContent = item.s;
+      text.appendChild(small);
+      var arrow = document.createElement("span"); arrow.textContent = "↗";
+      a.appendChild(text); a.appendChild(arrow);
+      box.appendChild(a);
+    });
+  }
+
+  function activityList(i) {
+    var list = [];
+    var interests = trip.interests.length ? trip.interests : ["culture", "food", "nature"];
+    interests.forEach(function (k) {
+      var opts = activitiesByInterest[k];
+      if (opts) list.push(opts[i % opts.length]);
+    });
+    if (i === 0) list.unshift("Arrive, check in and get familiar with the neighbourhood.");
+    if (i === trip.days - 1) list.push("Allow time to pack, check out and prepare for your return journey.");
+    return list.slice(0, 4);
+  }
+
+  function renderItinerary() {
+    var box = $("itinerary");
+    box.innerHTML = "";
+    var shown = Math.min(trip.days, 14);
+    for (var i = 0; i < shown; i++) {
+      var date = addDays(trip.start, i);
+      var card = document.createElement("article"); card.className = "day-card";
+      var label = document.createElement("div"); label.className = "day-date";
+      label.textContent = "DAY " + (i + 1) + " · " + dateText(date);
+      var h = document.createElement("h4");
+      h.textContent = i === 0 ? "Arrival & first discoveries" : (i === trip.days - 1 ? "Final explorations & return" : dayNames[date.getDay()] + " in " + trip.destination);
+      var p = document.createElement("p");
+      p.textContent = i === 0 ? "Settle in and start exploring at a relaxed pace." : "Explore " + trip.destination + " at a pace that suits your travel style.";
+      var ul = document.createElement("ul");
+      activityList(i).forEach(function (a) { var li = document.createElement("li"); li.textContent = a; ul.appendChild(li); });
+      card.appendChild(label); card.appendChild(h); card.appendChild(p); card.appendChild(ul);
+      box.appendChild(card);
+    }
+    if (trip.days > 14) {
+      var note = document.createElement("p"); note.className = "small-note";
+      note.textContent = "Showing the first 14 days. Your trip lasts " + trip.days + " days; use this as a starting point for the rest.";
+      box.appendChild(note);
+    }
+  }
+
+  function renderTrip() {
+    $("tripTitle").textContent = trip.origin + " → " + trip.destination;
+    $("tripSubtitle").textContent = dateText(trip.start) + " – " + dateText(trip.end) + " · " + transportLabels[trip.transport] + " · " + trip.travellers + (trip.travellers === 1 ? " traveller" : " travellers");
+    renderBudget(); renderLinks(); renderItinerary();
+    var interests = trip.interests.length ? trip.interests.join(", ") : "culture, food and nature";
+    $("travelTip").textContent = "Your travel style: " + trip.style.charAt(0).toUpperCase() + trip.style.slice(1) + ". Your selected interests: " + interests + "." + (trip.notes ? " Your note: " + trip.notes : "") + " Activity suggestions are inspiration, not confirmed bookings.";
+    emptyState.hidden = true;
+    content.hidden = false;
+    $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    errorBox.textContent = "";
+    try {
+      trip = readTrip();
+      costs = estimateCosts(trip);
+      fillCostInputs();
+      renderTrip();
+    } catch (err) {
+      errorBox.textContent = err.message || "Something went wrong. Please check your trip details.";
+    }
+  });
+
+  $("updateButton").addEventListener("click", function () {
+    if (!trip || !costs) return;
+    var fields = [["editTransport", "transport"], ["editStay", "stay"], ["editFood", "food"], ["editLocal", "local"], ["editActivities", "activities"]];
+    for (var i = 0; i < fields.length; i++) {
+      var input = $(fields[i][0]), v = Number(input.value);
+      if (input.value.trim() === "" || !isFinite(v) || v < 0) {
+        input.focus();
+        $("budgetMessage").textContent = "Please enter valid non-negative values for all costs.";
+        $("budgetMessage").style.color = "#b42318";
+        return;
+      }
+      costs[fields[i][1]] = v;
+    }
+    renderBudget();
+  });
+
+  $("resetButton").addEventListener("click", function () {
+    form.reset(); trip = null; costs = null; errorBox.textContent = "";
+    content.hidden = true; emptyState.hidden = false;
+    $("planner").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  $("printButton").addEventListener("click", function () { window.print(); });
+
+  startIn.addEventListener("change", function () {
+    endIn.min = startIn.value;
+    if (endIn.value && endIn.value <= startIn.value) endIn.value = "";
+  });
+
+  var t = new Date();
+  var todayStr = t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0");
+  startIn.min = todayStr; endIn.min = todayStr;
+})();
+</script>
 </body>
 </html>
