@@ -65,9 +65,9 @@ The website works on desktops, laptops, tablets and mobile phones.
 ```text
 TripPlanner/
 │
-├── index.html        (complete website: HTML, CSS and JavaScript)
-├── style.css         (earlier separate stylesheet, not used by the live site)
-├── script.js         (earlier separate script, not used by the live site)
+├── index.html
+├── style.css
+├── script.js
 ├── Screenshots/
 │   ├── Homepage.png
 │   ├── tripform.png
