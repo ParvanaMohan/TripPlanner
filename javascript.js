@@ -1,4 +1,3 @@
-
 "use strict";
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -294,7 +293,7 @@ document.addEventListener("DOMContentLoaded", function () {
       },
       {
         title: "Search travel dates",
-        description: date + " to " + returnDate,
+        description: trip.startDateString + " to " + trip.endDateString,
         url: "https://www.google.com/search?q=" + origin + "+to+" + destination +
           "+travel+" + date + "+to+" + returnDate
       }
@@ -432,32 +431,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   form.addEventListener("submit", function (event) {
-  event.preventDefault();
+    event.preventDefault();
+    clearError();
 
-  try {
-    trip = readTrip();
-    trip.startDateString = startDateInput.value;
-    trip.endDateString = endDateInput.value;
-    costs = estimateCosts(trip);
+    try {
+      trip = readTrip();
+      trip.startDateString = startDateInput.value;
+      trip.endDateString = endDateInput.value;
+      costs = estimateCosts(trip);
 
-    updateCostInputs();
-    renderTrip();
-
-    resultsSection.hidden = false;
-    emptyState.hidden = true;
-    resultsContent.hidden = false;
-
-    resultsSection.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  } catch (exception) {
-    showError(
-      exception.message ||
-      "Please check your trip details and try again."
-    );
-  }
-});
+      updateCostInputs();
+      renderTrip();
     } catch (exception) {
       showError(exception.message || "Something went wrong. Please check your trip details.");
     }
