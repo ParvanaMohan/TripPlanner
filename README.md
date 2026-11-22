@@ -81,20 +81,6 @@ TripPlanner/
 
 ---
 
-## How to Run
-
-### Method 1 - Use the Live Website
-Open https://parvanamohan.github.io/TripPlanner/ in any browser.
-
-### Method 2 - Run on Your Computer
-1. Open the repository and select **Code → Download ZIP**.
-2. Extract the ZIP file.
-3. Open `index.html` in a web browser.
-
-No Node.js, database or server is required.
-
----
-
 ## How the Planner Works
 
 ```text
